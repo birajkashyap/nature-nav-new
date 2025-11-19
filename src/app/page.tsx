@@ -1,65 +1,184 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useRef, useState } from "react";
+// Assuming Button, Card, and other UI components are imported in the real file
+// Since you provided only the raw component logic, I'm importing core icons:
+import { ArrowRight, MapPin, Star } from "lucide-react";
+import Link from "next/link"; // Use Next.js Link for navigation
+
+const HERO_BACKGROUND_IMAGE = "/hero-luxury-suv.jpg";
+
+const Home = () => {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const [scrollY, setScrollY] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Set loaded to true immediately so content is visible
+    setIsLoaded(true);
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const testimonials = [
+    { name: "A. Chen", text: "Unmatched professionalism and punctuality." },
+    { name: "M. Patel", text: "Vehicles are immaculate. True VIP service." },
+    { name: "S. Lee", text: "Perfect corporate travel solution." },
+  ];
+
+  // Calculate the parallax offset based on scroll position
+  const parallaxOffset = scrollY * -0.2;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-background font-body">
+      {/* HERO SECTION */}
+      <section
+        ref={heroRef}
+        className="relative h-screen flex items-center justify-center overflow-hidden"
+      >
+        <div
+          ref={bgRef}
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-100"
+          style={{
+            backgroundImage: `url(${HERO_BACKGROUND_IMAGE})`,
+            transform: `translateY(${parallaxOffset}px)`,
+          }}
+        >
+          {/* Use custom color variables for the overlay */}
+          <div className="absolute inset-0 bg-background/50 dark:bg-background/80" />
+        </div>
+
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <h1
+            className={`text-6xl md:text-8xl font-luxury mb-6 text-foreground/95 transition-all duration-1000 ${
+              isLoaded
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-12"
+            }`}
+          >
+            Premium Chauffeur Services
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p
+            className={`text-xl md:text-2xl mb-10 text-foreground/80 transition-all duration-1000 delay-300 ${
+              isLoaded
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-12"
+            }`}
+          >
+            Experience luxury travel across the Canadian Rockies.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          <div
+            className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-500 ${
+              isLoaded
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-12"
+            }`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {/* BUTTON 1: Primary Accent */}
+            <Link
+              href="/contact"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 dark:bg-accent-dark dark:hover:bg-accent-dark/90 text-lg px-8 py-4 rounded-full shadow-lg transition-all hover:scale-105 inline-block"
+            >
+              Book Instantly
+            </Link>
+
+            {/* BUTTON 2: Outline Accent */}
+            <Link
+              href="/services"
+              className="border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground dark:border-accent-dark dark:text-accent-dark dark:hover:bg-accent-dark dark:hover:text-accent-foreground text-lg px-8 py-4 rounded-full transition-all hover:scale-105 inline-flex items-center justify-center"
+            >
+              Explore Services <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* COMPANY SUMMARY */}
+      <section ref={summaryRef} className="py-24 px-4 bg-background">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-6">
+            <h2 className="text-4xl font-luxury text-accent dark:text-accent-dark animate-fade-in">
+              Exclusivity & Comfort
+            </h2>
+            <p className="text-xl text-foreground/80 leading-relaxed animate-fade-in-delay-1">
+              <strong>Nature Navigator</strong> provides VIP limousine and
+              executive transportation across the Canadian Rockies. Our fleet
+              includes sedans, SUVs, vans, minicoaches, and stretch limousines.
+            </p>
+            <div className="pt-4 flex items-center text-lg text-foreground/70 animate-fade-in-delay-2">
+              <MapPin className="w-5 h-5 mr-2 text-accent dark:text-accent-dark" />
+              <strong>Service Area:</strong> Canmore, Banff, Jasper, Calgary,
+              and more.
+            </div>
+          </div>
+
+          <div className="h-96 bg-muted/50 rounded-lg shadow-xl flex items-center justify-center animate-fade-in-delay-3">
+            <span className="text-muted-foreground">Image Placeholder</span>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="py-24 px-4 bg-muted/30 dark:bg-muted/50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-luxury text-center mb-16 text-foreground/95">
+            Trusted by Our Clients
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((t, i) => (
+              <div
+                key={i}
+                className="bg-card shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-lg p-6"
+              >
+                <div className="flex mb-4 text-accent dark:text-accent-dark">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="h-5 w-5 fill-current" />
+                  ))}
+                </div>
+                <p className="text-foreground/70 mb-4 italic leading-relaxed">
+                  "{t.text}"
+                </p>
+                <p className="font-semibold text-sm text-foreground/95">
+                  — {t.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24 px-4 bg-background text-center">
+        <h2 className="text-4xl md:text-5xl font-luxury mb-6 text-foreground/95">
+          Ready to Reserve Your VIP Ride?
+        </h2>
+        <p className="text-xl text-muted-foreground mb-10">
+          All rides must be pre-booked to ensure availability and a flawless
+          experience.
+        </p>
+
+        <Link
+          href="/contact"
+          className="inline-block bg-accent text-accent-foreground hover:bg-accent/90 dark:bg-accent-dark dark:hover:bg-accent-dark/90 text-lg px-12 py-4 rounded-full shadow-xl transition-all hover:scale-105"
+        >
+          Reserve Your Ride Now
+        </Link>
+      </section>
+
+      {/* You must remove the <style jsx> block if you are using Tailwind classes */}
+      {/* If you intend to keep these animations, they should be moved to global CSS
+          or replaced with the GSAP ScrollTrigger logic we used previously. 
+          For now, I'm keeping your JS-based parallax but removing the custom CSS styles. */}
+    </main>
   );
-}
+};
+
+export default Home;
