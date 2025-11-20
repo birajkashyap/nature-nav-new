@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, MapPin, Star } from "lucide-react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 const HERO_BACKGROUND_IMAGE = "/hero-luxury-suv.jpg";
 
@@ -10,7 +12,7 @@ const Home = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
-
+  const { data: session } = useSession();
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -81,12 +83,23 @@ const Home = () => {
             }`}
           >
             {/* Primary Button */}
-            <Link
-              href="/contact"
-              className="bg-accent text-accent-foreground hover:bg-accent/90 text-lg px-8 py-4 rounded-full shadow-lg transition-all hover:scale-105 inline-block"
-            >
-              Book Instantly
-            </Link>
+            {!session ? (
+              // NOT LOGGED IN → send to your custom login page
+              <Link
+                href="/login"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 text-lg px-8 py-4 rounded-full shadow-lg transition-all hover:scale-105"
+              >
+                Book Instantly
+              </Link>
+            ) : (
+              // LOGGED IN → take them to actual booking form
+              <Link
+                href="/contact"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 text-lg px-8 py-4 rounded-full shadow-lg transition-all hover:scale-105"
+              >
+                Proceed to Booking
+              </Link>
+            )}
 
             {/* Outline Button */}
             <Link

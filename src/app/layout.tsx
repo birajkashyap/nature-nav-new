@@ -3,7 +3,7 @@ import "./globals.css";
 import { Inter, Playfair_Display } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import FloatingDock from "@/components/floating-dock";
-
+import SessionProvider from "@/components/SessionProvider";
 const luxuryFont = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -37,10 +37,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="bg-background text-foreground min-h-screen">
+          <SessionProvider>
             {children}
             <FloatingDock />
-          </div>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

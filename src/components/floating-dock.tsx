@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { Home, Car, Luggage, Building, Phone } from "lucide-react";
 import gsap from "gsap";
 import { ThemeToggle } from "./theme-toggle"; // ThemeToggle is fine
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -17,6 +19,10 @@ const navItems = [
 
 const FloatingDock = () => {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const isLoggedIn = !!session;
   const dockRef = useRef<HTMLDivElement>(null);
   // Ref type corrected to HTMLAnchorElement
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
@@ -141,7 +147,13 @@ const FloatingDock = () => {
                 onMouseLeave={() => handleMouseLeave(label)}
               >
                 <Link
-                  href={href}
+                  href={isLoggedIn || href === "/" ? href : "#"}
+                  onClick={(e) => {
+                    if (!isLoggedIn && href !== "/") {
+                      e.preventDefault();
+                      router.push("/login");
+                    }
+                  }}
                   ref={(el) => {
                     linkRefs.current[label] = el;
                   }}
