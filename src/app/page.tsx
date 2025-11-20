@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-// Assuming Button, Card, and other UI components are imported in the real file
-// Since you provided only the raw component logic, I'm importing core icons:
 import { ArrowRight, MapPin, Star } from "lucide-react";
-import Link from "next/link"; // Use Next.js Link for navigation
+import Link from "next/link";
 
 const HERO_BACKGROUND_IMAGE = "/hero-luxury-suv.jpg";
 
@@ -12,11 +10,11 @@ const Home = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
+
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Set loaded to true immediately so content is visible
     setIsLoaded(true);
 
     const handleScroll = () => {
@@ -33,12 +31,11 @@ const Home = () => {
     { name: "S. Lee", text: "Perfect corporate travel solution." },
   ];
 
-  // Calculate the parallax offset based on scroll position
   const parallaxOffset = scrollY * -0.2;
 
   return (
-    <main className="min-h-screen bg-background font-body">
-      {/* HERO SECTION */}
+    <main className="min-h-screen bg-background font-body text-foreground">
+      {/* HERO */}
       <section
         ref={heroRef}
         className="relative h-screen flex items-center justify-center overflow-hidden"
@@ -51,7 +48,7 @@ const Home = () => {
             transform: `translateY(${parallaxOffset}px)`,
           }}
         >
-          {/* Use custom color variables for the overlay */}
+          {/* Dark overlay uses variable-driven colors */}
           <div className="absolute inset-0 bg-background/50 dark:bg-background/80" />
         </div>
 
@@ -65,6 +62,7 @@ const Home = () => {
           >
             Premium Chauffeur Services
           </h1>
+
           <p
             className={`text-xl md:text-2xl mb-10 text-foreground/80 transition-all duration-1000 delay-300 ${
               isLoaded
@@ -82,18 +80,18 @@ const Home = () => {
                 : "opacity-0 translate-y-12"
             }`}
           >
-            {/* BUTTON 1: Primary Accent */}
+            {/* Primary Button */}
             <Link
               href="/contact"
-              className="bg-accent text-accent-foreground hover:bg-accent/90 dark:bg-accent-dark dark:hover:bg-accent-dark/90 text-lg px-8 py-4 rounded-full shadow-lg transition-all hover:scale-105 inline-block"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 text-lg px-8 py-4 rounded-full shadow-lg transition-all hover:scale-105 inline-block"
             >
               Book Instantly
             </Link>
 
-            {/* BUTTON 2: Outline Accent */}
+            {/* Outline Button */}
             <Link
               href="/services"
-              className="border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground dark:border-accent-dark dark:text-accent-dark dark:hover:bg-accent-dark dark:hover:text-accent-foreground text-lg px-8 py-4 rounded-full transition-all hover:scale-105 inline-flex items-center justify-center"
+              className="border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground text-lg px-8 py-4 rounded-full transition-all hover:scale-105 inline-flex items-center justify-center"
             >
               Explore Services <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
@@ -101,20 +99,21 @@ const Home = () => {
         </div>
       </section>
 
-      {/* COMPANY SUMMARY */}
+      {/* SUMMARY */}
       <section ref={summaryRef} className="py-24 px-4 bg-background">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
-            <h2 className="text-4xl font-luxury text-accent dark:text-accent-dark animate-fade-in">
+            <h2 className="text-4xl font-luxury text-accent animate-fade-in">
               Exclusivity & Comfort
             </h2>
+
             <p className="text-xl text-foreground/80 leading-relaxed animate-fade-in-delay-1">
               <strong>Nature Navigator</strong> provides VIP limousine and
-              executive transportation across the Canadian Rockies. Our fleet
-              includes sedans, SUVs, vans, minicoaches, and stretch limousines.
+              executive transportation across the Canadian Rockies.
             </p>
+
             <div className="pt-4 flex items-center text-lg text-foreground/70 animate-fade-in-delay-2">
-              <MapPin className="w-5 h-5 mr-2 text-accent dark:text-accent-dark" />
+              <MapPin className="w-5 h-5 mr-2 text-accent" />
               <strong>Service Area:</strong> Canmore, Banff, Jasper, Calgary,
               and more.
             </div>
@@ -132,20 +131,23 @@ const Home = () => {
           <h2 className="text-4xl md:text-5xl font-luxury text-center mb-16 text-foreground/95">
             Trusted by Our Clients
           </h2>
+
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((t, i) => (
               <div
                 key={i}
-                className="bg-card shadow-lg hover:shadow-2xl transition-shadow duration-300 rounded-lg p-6"
+                className="bg-card rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 p-6"
               >
-                <div className="flex mb-4 text-accent dark:text-accent-dark">
+                <div className="flex mb-4 text-accent">
                   {[...Array(5)].map((_, j) => (
                     <Star key={j} className="h-5 w-5 fill-current" />
                   ))}
                 </div>
+
                 <p className="text-foreground/70 mb-4 italic leading-relaxed">
                   "{t.text}"
                 </p>
+
                 <p className="font-semibold text-sm text-foreground/95">
                   — {t.name}
                 </p>
@@ -160,23 +162,18 @@ const Home = () => {
         <h2 className="text-4xl md:text-5xl font-luxury mb-6 text-foreground/95">
           Ready to Reserve Your VIP Ride?
         </h2>
+
         <p className="text-xl text-muted-foreground mb-10">
-          All rides must be pre-booked to ensure availability and a flawless
-          experience.
+          All rides must be pre-booked.
         </p>
 
         <Link
           href="/contact"
-          className="inline-block bg-accent text-accent-foreground hover:bg-accent/90 dark:bg-accent-dark dark:hover:bg-accent-dark/90 text-lg px-12 py-4 rounded-full shadow-xl transition-all hover:scale-105"
+          className="inline-block bg-accent text-accent-foreground hover:bg-accent/90 text-lg px-12 py-4 rounded-full shadow-xl transition-all hover:scale-105"
         >
           Reserve Your Ride Now
         </Link>
       </section>
-
-      {/* You must remove the <style jsx> block if you are using Tailwind classes */}
-      {/* If you intend to keep these animations, they should be moved to global CSS
-          or replaced with the GSAP ScrollTrigger logic we used previously. 
-          For now, I'm keeping your JS-based parallax but removing the custom CSS styles. */}
     </main>
   );
 };

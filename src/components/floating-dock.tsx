@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Car, Luggage, Building, Phone } from "lucide-react";
 import gsap from "gsap";
-import { ThemeToggle } from "./theme-provider"; // ThemeToggle is fine
+import { ThemeToggle } from "./theme-toggle"; // ThemeToggle is fine
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -152,7 +152,7 @@ const FloatingDock = () => {
                     ${
                       // Active state applies accent colors
                       isActive
-                        ? "bg-accent shadow-md dark:bg-accent-dark text-accent-foreground w-auto px-2"
+                        ? "bg-accent shadow-md dark:bg-accent text-accent-foreground w-auto px-2"
                         : // Inactive state applies muted background and relies on group-hover for color
                           "bg-transparent hover:bg-card/50 w-[48px] justify-center"
                     }
@@ -181,9 +181,9 @@ const FloatingDock = () => {
             );
           })}
 
-          <li className="pl-3 border-l border-card/30">
+          {/* <li className="pl-3 border-l border-card/30">
             <ThemeToggle />
-          </li>
+          </li> */}
         </ul>
       </nav>
     </div>

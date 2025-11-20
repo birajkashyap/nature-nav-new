@@ -6,8 +6,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 
+// Assuming these imports point to components that correctly use Tailwind classes
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card"; // Removed unused imports: CardContent, CardHeader, CardTitle
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +22,7 @@ import {
 gsap.registerPlugin(ScrollTrigger);
 
 const contactInfo = [
+  // ... (contactInfo data remains the same)
   {
     icon: Phone,
     title: "Phone",
@@ -44,6 +46,7 @@ const contactInfo = [
 ];
 
 const faqData = [
+  // ... (faqData data remains the same)
   {
     value: "item-1",
     question: "How far in advance should I book?",
@@ -170,7 +173,8 @@ const ContactPage = () => {
   return (
     <main
       ref={mainRef}
-      className="min-h-screen pt-32 pb-24 px-4 bg-background font-body"
+      /* 💡 FIX: Removed 'bg-background' here. The <body> tag handles the background switch now. */
+      className="min-h-screen pt-32 pb-24 px-4 font-body"
     >
       <div className="max-w-7xl mx-auto space-y-20">
         <header className="text-center contact-animate">
@@ -185,7 +189,7 @@ const ContactPage = () => {
 
         <section className="grid lg:grid-cols-2 gap-12">
           <div className="space-y-6 contact-animate">
-            <h2 className="text-4xl font-luxury text-accent dark:text-accent-dark">
+            <h2 className="text-4xl font-luxury text-accent">
               Reserve Your Ride
             </h2>
             <form className="space-y-6">
@@ -234,7 +238,7 @@ const ContactPage = () => {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full h-12 rounded-full bg-accent dark:bg-accent-dark text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01]"
+                className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01]"
               >
                 Submit Booking Request
               </Button>
@@ -248,7 +252,7 @@ const ContactPage = () => {
                   key={item.title}
                   className="bg-card p-6 rounded-xl shadow-lg border-0"
                 >
-                  <item.icon className="h-8 w-8 text-accent dark:text-accent-dark mb-3" />
+                  <item.icon className="h-8 w-8 text-accent mb-3" />
                   <h3 className="text-xl font-luxury text-foreground mb-1">
                     {item.title}
                   </h3>
@@ -284,7 +288,7 @@ const ContactPage = () => {
           >
             {faqData.map((item) => (
               <AccordionItem key={item.value} value={item.value}>
-                <AccordionTrigger className="text-lg font-semibold text-left py-4 text-foreground/90 hover:text-accent dark:hover:text-accent-dark">
+                <AccordionTrigger className="text-lg font-semibold text-left py-4 text-foreground/90 hover:text-accent">
                   {item.question}
                 </AccordionTrigger>
                 <GSAPAccordionContent className="text-base text-muted-foreground">

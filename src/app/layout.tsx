@@ -1,4 +1,4 @@
-// app/layout.tsx
+// app/layout.tsx (FIXED)
 import "./globals.css";
 import { Inter, Playfair_Display } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -28,10 +28,19 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${luxuryFont.variable} ${bodyFont.variable}`}
     >
+      <head />
+      {/* 💡 FIX: Apply the dynamic background and text classes to the body */}
       <body className="font-body antialiased">
-        <ThemeProvider>
-          {children}
-          <FloatingDock />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="bg-background text-foreground min-h-screen">
+            {children}
+            <FloatingDock />
+          </div>
         </ThemeProvider>
       </body>
     </html>

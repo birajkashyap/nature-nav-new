@@ -1,67 +1,70 @@
 @import "tailwindcss";
 
-/* Theme variables */
+/* --------------------------------------------------- */
+/* DARK-ONLY THEME VARIABLES                           */
+/* --------------------------------------------------- */
+
 @theme {
-  --color-background: #fafafa;
-  --color-foreground: #171717;
-  --color-card: #ffffff;
-  --color-card-foreground: #171717;
-  --color-accent: #e5b84b;
-  --color-accent-foreground: #fafafa;
-  --color-muted: #f5f5f5;
-  --color-muted-foreground: #737373;
+  /* Dark mode tokens ONLY */
+  --color-background: #1a1a1a;
+  --color-foreground: #ebebeb;
 
-  --color-dark-background: #0a0a0a;
-  --color-dark-foreground: #fafafa;
-  --color-dark-card: #171717;
-  --color-dark-card-foreground: #fafafa;
-  --color-dark-accent: #f0d488;
-  --color-dark-accent-foreground: #171717;
-  --color-dark-muted: #262626;
-  --color-dark-muted-foreground: #a3a3a3;
+  --color-card: #252525;
+  --color-card-foreground: #ebebeb;
 
+  --color-accent: #ffc72c;
+  --color-accent-foreground: #1a1a1a;
+
+  --color-muted: #333333;
+  --color-muted-foreground: #b0b0b0;
+
+  /* Utilities */
   --backdrop-blur-xs: 2px;
 
-  /* 🆕 FIX: expose custom fonts to Tailwind */
+  /* Font variables (stay as-is) */
   --font-luxury: var(--font-luxury);
   --font-body: var(--font-body);
 }
 
-/* Light & dark mode variables */
+/* --------------------------------------------------- */
+/* APPLY DARK THEME AS DEFAULT (NO LIGHT MODE)         */
+/* --------------------------------------------------- */
+
 @layer base {
   html {
-    font-family: var(--font-body); /* 🆕 make body font default */
-  }
+    font-family: var(--font-body);
 
-  :root {
+    /* DEFAULT = DARK THEME */
     --background: var(--color-background);
     --foreground: var(--color-foreground);
+
     --card: var(--color-card);
     --card-foreground: var(--color-card-foreground);
+
     --accent: var(--color-accent);
     --accent-foreground: var(--color-accent-foreground);
+
     --muted: var(--color-muted);
     --muted-foreground: var(--color-muted-foreground);
-  }
 
-  .dark {
-    --background: var(--color-dark-background);
-    --foreground: var(--color-dark-foreground);
-    --card: var(--color-dark-card);
-    --card-foreground: var(--color-dark-card-foreground);
-    --accent: var(--color-dark-accent);
-    --accent-foreground: var(--color-dark-accent-foreground);
-    --muted: var(--color-dark-muted);
-    --muted-foreground: var(--color-dark-muted-foreground);
+    /* Force system dark mode behavior */
+    color-scheme: dark;
   }
 }
 
-/* Utilities & components stay the same */
+/* --------------------------------------------------- */
+/* UTILITIES                                           */
+/* --------------------------------------------------- */
+
 @layer utilities {
   .backdrop-blur-xs {
     backdrop-filter: blur(var(--backdrop-blur-xs));
   }
 }
+
+/* --------------------------------------------------- */
+/* COMPONENTS                                           */
+/* --------------------------------------------------- */
 
 @layer components {
   .glass-dock {
