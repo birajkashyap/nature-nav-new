@@ -193,9 +193,9 @@ const FloatingDock = () => {
             );
           })}
 
-          {/* <li className="pl-3 border-l border-card/30">
+          <li className="pl-3 border-l border-card/30">
             <ThemeToggle />
-          </li> */}
+          </li>
         </ul>
       </nav>
     </div>

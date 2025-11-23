@@ -1,53 +1,39 @@
 @import "tailwindcss";
 
 /* --------------------------------------------------- */
-/* DARK-ONLY THEME VARIABLES                           */
-/* --------------------------------------------------- */
-
-@theme {
-  /* Dark mode tokens ONLY */
-  --color-background: #1a1a1a;
-  --color-foreground: #ebebeb;
-
-  --color-card: #252525;
-  --color-card-foreground: #ebebeb;
-
-  --color-accent: #ffc72c;
-  --color-accent-foreground: #1a1a1a;
-
-  --color-muted: #333333;
-  --color-muted-foreground: #b0b0b0;
-
-  /* Utilities */
-  --backdrop-blur-xs: 2px;
-
-  /* Font variables (stay as-is) */
-  --font-luxury: var(--font-luxury);
-  --font-body: var(--font-body);
-}
-
-/* --------------------------------------------------- */
-/* APPLY DARK THEME AS DEFAULT (NO LIGHT MODE)         */
+/* LIGHT & DARK MODE COLORS                            */
 /* --------------------------------------------------- */
 
 @layer base {
   html {
-    font-family: var(--font-body);
+    font-family: var(--font-body, system-ui, sans-serif);
+  }
 
-    /* DEFAULT = DARK THEME */
-    --background: var(--color-background);
-    --foreground: var(--color-foreground);
+  /* Light Mode (Default) */
+  :root {
+    --background: #fafafa;
+    --foreground: #171717;
+    --card: #ffffff;
+    --card-foreground: #171717;
+    --accent: #e5b84b;
+    --accent-foreground: #fafafa;
+    --muted: #f5f5f5;
+    --muted-foreground: #737373;
 
-    --card: var(--color-card);
-    --card-foreground: var(--color-card-foreground);
+    color-scheme: light;
+  }
 
-    --accent: var(--color-accent);
-    --accent-foreground: var(--color-accent-foreground);
+  /* Dark Mode */
+  .dark {
+    --background: #1a1a1a;
+    --foreground: #ebebeb;
+    --card: #252525;
+    --card-foreground: #ebebeb;
+    --accent: #ffc72c;
+    --accent-foreground: #1a1a1a;
+    --muted: #333333;
+    --muted-foreground: #b0b0b0;
 
-    --muted: var(--color-muted);
-    --muted-foreground: var(--color-muted-foreground);
-
-    /* Force system dark mode behavior */
     color-scheme: dark;
   }
 }
@@ -58,7 +44,32 @@
 
 @layer utilities {
   .backdrop-blur-xs {
-    backdrop-filter: blur(var(--backdrop-blur-xs));
+    backdrop-filter: blur(2px);
+  }
+
+  /* Force color utilities to work */
+  .bg-accent {
+    background-color: var(--accent) !important;
+  }
+
+  .text-accent {
+    color: var(--accent) !important;
+  }
+
+  .text-accent-foreground {
+    color: var(--accent-foreground) !important;
+  }
+
+  .border-accent {
+    border-color: var(--accent) !important;
+  }
+
+  .bg-accent\/90 {
+    background-color: color-mix(
+      in srgb,
+      var(--accent) 90%,
+      transparent
+    ) !important;
   }
 }
 
@@ -68,6 +79,10 @@
 
 @layer components {
   .glass-dock {
-    @apply backdrop-blur-md bg-card/10 border border-card/20 shadow-xl;
+    backdrop-filter: blur(8px);
+    background-color: color-mix(in srgb, var(--card) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--card) 20%, transparent);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 }

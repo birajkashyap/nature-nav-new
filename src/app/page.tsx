@@ -56,21 +56,21 @@ const Home = () => {
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <h1
-            className={`text-6xl md:text-8xl font-luxury mb-6 text-foreground/95 transition-all duration-1000 ${
-              isLoaded
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-12"
-            }`}
+            className={`text-6xl md:text-8xl font-luxury mb-6 
+    text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]
+    transition-all duration-1000 ${
+      isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+    }`}
           >
             Premium Chauffeur Services
           </h1>
 
           <p
-            className={`text-xl md:text-2xl mb-10 text-foreground/80 transition-all duration-1000 delay-300 ${
-              isLoaded
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-12"
-            }`}
+            className={`text-xl md:text-2xl mb-10 
+    text-white/90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]
+    transition-all duration-1000 delay-300 ${
+      isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+    }`}
           >
             Experience luxury travel across the Canadian Rockies.
           </p>
