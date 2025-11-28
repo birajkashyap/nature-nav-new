@@ -26,6 +26,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectPortal,
 } from "@/components/ui/select";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -137,7 +138,7 @@ function BookingForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       {error && (
         <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-md text-red-500 text-sm">
           {error}
@@ -166,21 +167,31 @@ function BookingForm() {
         </div>
       </div>
 
+      {/* Vehicle Selection - Portal handles layering */}
       <div className="space-y-2">
         <Label htmlFor="car">Select Vehicle</Label>
         <Select name="car" required>
-          <SelectTrigger>
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Choose a vehicle" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Executive Sedan">Executive Sedan (1-3 Pax)</SelectItem>
-            <SelectItem value="Luxury SUV">Luxury SUV (1-6 Pax)</SelectItem>
-            <SelectItem value="Executive Van">Executive Van (6-10 Pax)</SelectItem>
-            <SelectItem value="Stretch Limousine">Stretch Limousine (8-12 Pax)</SelectItem>
-          </SelectContent>
+          <SelectPortal>
+            <SelectContent
+              position="popper"
+              side="bottom"
+              align="start"
+              sideOffset={4}
+              className="z-[100]"
+            >
+              <SelectItem value="Executive Sedan">Executive Sedan (1-3 Pax)</SelectItem>
+              <SelectItem value="Luxury SUV">Luxury SUV (1-6 Pax)</SelectItem>
+              <SelectItem value="Executive Van">Executive Van (6-10 Pax)</SelectItem>
+              <SelectItem value="Stretch Limousine">Stretch Limousine (8-12 Pax)</SelectItem>
+            </SelectContent>
+          </SelectPortal>
         </Select>
       </div>
 
+      {/* Notes */}
       <div className="space-y-2">
         <Label htmlFor="notes">Additional Notes</Label>
         <Textarea

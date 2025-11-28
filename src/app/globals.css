@@ -98,3 +98,8 @@
       0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 }
+
+/* Force Select dropdown to appear above everything */
+[data-radix-select-content] {
+  z-index: 9999 !important;
+}

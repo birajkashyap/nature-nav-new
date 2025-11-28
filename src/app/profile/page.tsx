@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import {
@@ -128,6 +128,14 @@ function ProfileContent() {
               {session?.user?.email}
             </p>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="ml-2 hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors"
+          >
+            Sign Out
+          </Button>
         </div>
       </header>
 
