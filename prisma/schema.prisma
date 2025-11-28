@@ -61,6 +61,11 @@ model Booking {
   payment50  Boolean  @default(false)
   payment100 Boolean  @default(false)
 
+  totalPrice      Float?
+  depositAmount   Float?
+  stripeSessionId String? @unique
+  stripePaymentIntentId String?
+
   user       User     @relation(fields: [userId], references: [id])
 
   createdAt  DateTime @default(now())

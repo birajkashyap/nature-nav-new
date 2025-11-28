@@ -3,11 +3,12 @@
 import { useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Car, Luggage, Building, Phone } from "lucide-react";
+import { Home, Car, Luggage, Building, Phone, User } from "lucide-react";
 import gsap from "gsap";
 import { ThemeToggle } from "./theme-toggle"; // ThemeToggle is fine
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useActiveBooking } from "@/hooks/useActiveBooking";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -15,12 +16,14 @@ const navItems = [
   { href: "/services", label: "Services", icon: Luggage },
   { href: "/about", label: "About", icon: Building },
   { href: "/contact", label: "Book", icon: Phone },
+  { href: "/profile", label: "Profile", icon: User },
 ];
 
 const FloatingDock = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const router = useRouter();
+  const { hasActiveBooking } = useActiveBooking();
 
   const isLoggedIn = !!session;
   const dockRef = useRef<HTMLDivElement>(null);
@@ -133,23 +136,32 @@ const FloatingDock = () => {
         <ul className="flex items-center space-x-2">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href;
+            
+            // Disable "Book" if active booking exists
+            const isDisabled = label === "Book" && hasActiveBooking;
 
             // 💡 FIX: Set the hover text color to foreground (black/dark grey)
             const iconColorClass = isActive
               ? "text-accent-foreground"
-              : "text-foreground/80 group-hover:text-foreground dark:text-foreground/80 dark:group-hover:text-foreground";
+              : isDisabled 
+                ? "text-muted-foreground"
+                : "text-foreground/80 group-hover:text-foreground dark:text-foreground/80 dark:group-hover:text-foreground";
 
             return (
               <li
                 key={href}
-                className="flex items-center group"
-                onMouseEnter={() => handleMouseEnter(label)}
-                onMouseLeave={() => handleMouseLeave(label)}
+                className={`flex items-center group ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                onMouseEnter={() => !isDisabled && handleMouseEnter(label)}
+                onMouseLeave={() => !isDisabled && handleMouseLeave(label)}
               >
                 <Link
-                  href={isLoggedIn || href === "/" ? href : "#"}
+                  href={isDisabled ? "#" : (isLoggedIn || href === "/" ? href : "#")}
                   onClick={(e) => {
-                    if (!isLoggedIn && href !== "/") {
+                    if (isDisabled) {
+                      e.preventDefault();
+                      return;
+                    }
+                    if (!isLoggedIn && href !== "/" && href !== "/fleet" && href !== "/services" && href !== "/about") {
                       e.preventDefault();
                       router.push("/login");
                     }
@@ -186,7 +198,7 @@ const FloatingDock = () => {
                       ${isActive ? "opacity-100" : "opacity-0"}
                     `}
                   >
-                    {label}
+                    {isDisabled ? "Active Booking" : label}
                   </span>
                 </Link>
               </li>

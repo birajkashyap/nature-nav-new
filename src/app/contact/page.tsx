@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { loadStripe } from "@stripe/stripe-js";
 
-// Assuming these imports point to components that correctly use Tailwind classes
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card"; // Removed unused imports: CardContent, CardHeader, CardTitle
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,11 +20,195 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Initialize Stripe outside component to avoid recreation
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+);
+
+function BookingForm() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!session) {
+      router.push("/login?callbackUrl=/contact");
+      setLoading(false);
+      return;
+    }
+
+    const formData = new FormData(e.currentTarget);
+    const pickup = formData.get("pickup") as string;
+    const drop = formData.get("drop") as string;
+    const date = formData.get("date") as string;
+    const time = formData.get("time") as string;
+    const car = formData.get("car") as string;
+    const notes = formData.get("notes") as string;
+
+    if (!date || !time) {
+      setError("Please select both date and time.");
+      setLoading(false);
+      return;
+    }
+
+    // Combine date and time
+    const bookingDate = new Date(`${date}T${time}`);
+
+    try {
+      // 1. Create Booking & Get Price
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pickup,
+          drop,
+          date: bookingDate.toISOString(), // Ensure date is sent as ISO string
+          car,
+          notes,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Booking failed");
+      }
+
+      const { booking, priceDetails } = data;
+
+      // 2. Confirm Price with User (Simple Alert for MVP, better UI recommended)
+      const confirmed = confirm(
+        `Trip Details:\n` +
+        `Distance: ~${priceDetails.distanceKm} km\n` +
+        `Total Price: $${priceDetails.totalPrice}\n` +
+        `Required Deposit (50%): $${priceDetails.depositAmount}\n\n` +
+        `Proceed to payment?`
+      );
+
+      if (!confirmed) {
+        // Ideally we should cancel the booking here if they say no,
+        // but for now we just stop the payment flow. The booking stays "Pending"
+        // and they can cancel it from profile or it expires.
+        setLoading(false);
+        return;
+      }
+
+      // 3. Initiate Payment (No amount passed, server uses DB)
+      const paymentRes = await fetch("/api/payment/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookingId: booking.id,
+        }),
+      });
+
+      const paymentData = await paymentRes.json();
+
+      if (!paymentRes.ok) {
+        throw new Error(paymentData.error || "Payment initialization failed");
+      }
+
+      if (paymentData.url) {
+        window.location.href = paymentData.url;
+      } else {
+        throw new Error("Payment initialization failed: No URL provided.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-md text-red-500 text-sm">
+          {error}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="pickup">Pickup Location</Label>
+          <Input id="pickup" name="pickup" required placeholder="YYC Airport" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="drop">Drop-off Location</Label>
+          <Input id="drop" name="drop" required placeholder="Banff Springs Hotel" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="date">Date</Label>
+          <Input id="date" name="date" type="date" required />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="time">Time</Label>
+          <Input id="time" name="time" type="time" required />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="car">Select Vehicle</Label>
+        <Select name="car" required>
+          <SelectTrigger>
+            <SelectValue placeholder="Choose a vehicle" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Executive Sedan">Executive Sedan (1-3 Pax)</SelectItem>
+            <SelectItem value="Luxury SUV">Luxury SUV (1-6 Pax)</SelectItem>
+            <SelectItem value="Executive Van">Executive Van (6-10 Pax)</SelectItem>
+            <SelectItem value="Stretch Limousine">Stretch Limousine (8-12 Pax)</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="notes">Additional Notes</Label>
+        <Textarea
+          id="notes"
+          name="notes"
+          placeholder="Flight number, child seat request, etc."
+        />
+      </div>
+
+      <Button
+        type="submit"
+        disabled={loading}
+        size="lg"
+        className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01]"
+      >
+        {loading ? "Processing..." : "Proceed to Payment (50% Deposit)"}
+      </Button>
+
+      {!session && (
+        <p className="text-xs text-center text-muted-foreground">
+          You will be asked to sign in before booking.
+        </p>
+      )}
+    </form>
+  );
+}
+
 const contactInfo = [
-  // ... (contactInfo data remains the same)
   {
     icon: Phone,
     title: "Phone",
@@ -46,7 +232,6 @@ const contactInfo = [
 ];
 
 const faqData = [
-  // ... (faqData data remains the same)
   {
     value: "item-1",
     question: "How far in advance should I book?",
@@ -173,7 +358,6 @@ const ContactPage = () => {
   return (
     <main
       ref={mainRef}
-      /* 💡 FIX: Removed 'bg-background' here. The <body> tag handles the background switch now. */
       className="min-h-screen pt-32 pb-24 px-4 font-body"
     >
       <div className="max-w-7xl mx-auto space-y-20">
@@ -192,57 +376,7 @@ const ContactPage = () => {
             <h2 className="text-4xl font-luxury text-accent">
               Reserve Your Ride
             </h2>
-            <form className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-base">
-                  Full Name
-                </Label>
-                <Input id="name" placeholder="John Doe" className="h-12" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-base">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="john.doe@example.com"
-                  className="h-12"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-base">
-                  Phone Number
-                </Label>
-                <Input
-                  id="phone"
-                  placeholder="+1 (555) 123-4567"
-                  className="h-12"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="details" className="text-base">
-                  Trip Details
-                </Label>
-                <Textarea
-                  id="details"
-                  placeholder="Please provide details about your trip (pickup location, destination, date, time, number of passengers, etc.)"
-                  rows={5}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground pt-2">
-                **All rides must be pre-booked to ensure availability and a
-                flawlessly planned experience.** A member of our team will
-                contact you to confirm your booking.
-              </p>
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01]"
-              >
-                Submit Booking Request
-              </Button>
-            </form>
+            <BookingForm />
           </div>
 
           <div className="space-y-8 contact-animate">
