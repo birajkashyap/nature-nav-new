@@ -132,8 +132,12 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="h-96 bg-muted/50 rounded-lg shadow-xl flex items-center justify-center animate-fade-in-delay-3">
-            <span className="text-muted-foreground">Image Placeholder</span>
+          <div className="h-96 rounded-lg shadow-xl overflow-hidden animate-fade-in-delay-3 group">
+            <img
+              src="https://images.unsplash.com/photo-1563720223185-11003d516935?q=80&w=2070&auto=format&fit=crop"
+              alt="Luxury Interior"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
           </div>
         </div>
       </section>

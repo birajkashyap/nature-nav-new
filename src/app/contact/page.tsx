@@ -174,20 +174,23 @@ function BookingForm() {
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Choose a vehicle" />
           </SelectTrigger>
-          <SelectPortal>
-            <SelectContent
-              position="popper"
-              side="bottom"
-              align="start"
-              sideOffset={4}
-              className="z-[100]"
-            >
-              <SelectItem value="Executive Sedan">Executive Sedan (1-3 Pax)</SelectItem>
-              <SelectItem value="Luxury SUV">Luxury SUV (1-6 Pax)</SelectItem>
-              <SelectItem value="Executive Van">Executive Van (6-10 Pax)</SelectItem>
-              <SelectItem value="Stretch Limousine">Stretch Limousine (8-12 Pax)</SelectItem>
-            </SelectContent>
-          </SelectPortal>
+          <SelectContent
+            position="popper"
+            side="bottom"
+            align="start"
+            sideOffset={4}
+            className="z-[9999] !bg-background border-2 border-border shadow-2xl !opacity-100"
+            style={{
+              backgroundColor: 'var(--background)',
+              opacity: 1,
+              zIndex: 9999,
+            }}
+          >
+            <SelectItem value="Executive Sedan">Executive Sedan (1-3 Pax)</SelectItem>
+            <SelectItem value="Luxury SUV">Luxury SUV (1-6 Pax)</SelectItem>
+            <SelectItem value="Executive Van">Executive Van (6-10 Pax)</SelectItem>
+            <SelectItem value="Stretch Limousine">Stretch Limousine (8-12 Pax)</SelectItem>
+          </SelectContent>
         </Select>
       </div>
 

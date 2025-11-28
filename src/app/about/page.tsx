@@ -158,7 +158,9 @@ const AboutPage = () => {
             {/* Image Placeholder 1 (Left Column) */}
             <div
               className="col-span-1 bg-gray-600 bg-cover bg-center"
-              style={{ backgroundImage: `url(/about-rockies.jpg)` }}
+              style={{
+                backgroundImage: `url(https://images.unsplash.com/photo-1561490497-43bc900ac2d8?q=80&w=2070&auto=format&fit=crop)`,
+              }}
             >
               <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 hover:bg-black/0" />
             </div>
@@ -167,13 +169,17 @@ const AboutPage = () => {
             <div className="col-span-2 grid grid-rows-2 gap-1">
               <div
                 className="row-span-1 bg-gray-700 bg-cover bg-center"
-                style={{ backgroundImage: `url(/about-chauffeur.jpg)` }}
+                style={{
+                  backgroundImage: `url(https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=2070&auto=format&fit=crop)`,
+                }}
               >
                 <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 hover:bg-black/0" />
               </div>
               <div
                 className="row-span-1 bg-gray-800 bg-cover bg-center"
-                style={{ backgroundImage: `url(/about-interior.jpg)` }}
+                style={{
+                  backgroundImage: `url(https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=2036&auto=format&fit=crop)`,
+                }}
               >
                 <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 hover:bg-black/0" />
               </div>

@@ -17,6 +17,16 @@ const bodyFont = Inter({
   display: "swap",
 });
 
+export const metadata = {
+  title: "Nature Navigator - Luxury Chauffeur Services",
+  description: "Premium chauffeur and luxury travel experiences in the Canadian Rockies.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
+};
+
 export default function RootLayout({
   children,
 }: {
