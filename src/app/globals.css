@@ -18,7 +18,14 @@
     --accent: #e5b84b;
     --accent-foreground: #fafafa;
     --muted: #f5f5f5;
+    --muted: #f5f5f5;
     --muted-foreground: #737373;
+    --popover: #ffffff;
+    --popover-foreground: #171717;
+    --border: #e5e5e5;
+    --input: #e5e5e5;
+    --ring: #171717;
+    --radius: 0.5rem;
 
     color-scheme: light;
   }
@@ -33,6 +40,11 @@
     --accent-foreground: #1a1a1a;
     --muted: #333333;
     --muted-foreground: #b0b0b0;
+    --popover: #252525;
+    --popover-foreground: #ebebeb;
+    --border: #404040;
+    --input: #404040;
+    --ring: #ebebeb;
 
     color-scheme: dark;
   }
