@@ -45,20 +45,37 @@ export async function POST(req: Request) {
             return NextResponse.json({ received: true });
         }
 
-        if (existingBooking.status === "Approved" && existingBooking.payment50) {
-            console.log("Booking already approved, skipping update:", bookingId);
-            return NextResponse.json({ received: true });
-        }
+        const paymentType = session.metadata?.paymentType;
 
-        // Update Booking
-        await prisma.booking.update({
-          where: { id: bookingId },
-          data: {
-            payment50: true,
-            status: "Approved",
-            stripePaymentIntentId: paymentIntentId, // Save for refunds/reference
-          },
-        });
+        if (paymentType === "final") {
+             // Handle Final Payment
+             await prisma.booking.update({
+                where: { id: bookingId },
+                data: {
+                    payment100: true,
+                    status: "Completed",
+                    completedAt: new Date(),
+                    stripePaymentIntentId: paymentIntentId, // Update with latest intent
+                } as any
+             });
+             console.log("Booking COMPLETED successfully:", bookingId);
+        } else {
+            // Handle Deposit (Default)
+            if (existingBooking.status === "Approved" && existingBooking.payment50) {
+                console.log("Booking already approved, skipping update:", bookingId);
+                return NextResponse.json({ received: true });
+            }
+
+            await prisma.booking.update({
+              where: { id: bookingId },
+              data: {
+                payment50: true,
+                status: "Approved",
+                stripePaymentIntentId: paymentIntentId,
+              } as any,
+            });
+            console.log("Booking APPROVED (Deposit Paid):", bookingId);
+        }
         console.log("Booking updated successfully:", bookingId);
       } catch (err) {
         console.error("Failed to update booking:", err);

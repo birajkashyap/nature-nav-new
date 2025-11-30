@@ -155,13 +155,14 @@ const FloatingDock = () => {
                 onMouseLeave={() => !isDisabled && handleMouseLeave(label)}
               >
                 <Link
-                  href={isDisabled ? "#" : (isLoggedIn || href === "/" ? href : "#")}
+                  href={isDisabled ? "#" : href}
                   onClick={(e) => {
                     if (isDisabled) {
                       e.preventDefault();
                       return;
                     }
-                    if (!isLoggedIn && href !== "/" && href !== "/fleet" && href !== "/services" && href !== "/about") {
+                    // Only require login for /contact and /profile
+                    if (!isLoggedIn && (href === "/contact" || href === "/profile")) {
                       e.preventDefault();
                       router.push("/login");
                     }

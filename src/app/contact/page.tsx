@@ -36,11 +36,29 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
+// Vehicle fleet configuration - easily extensible for future vehicles
+const VEHICLE_FLEET = [
+  { name: "Executive Sedan", minPassengers: 1, maxPassengers: 4 },
+  { name: "Luxury SUV (7 Passengers)", minPassengers: 5, maxPassengers: 7 },
+  { name: "Executive Van", minPassengers: 8, maxPassengers: 11 },
+  { name: "Transit Van (14 Passengers)", minPassengers: 12, maxPassengers: 14 },
+  // Add more vehicles here as fleet expands
+];
+
+function getRecommendedVehicle(passengers: number): string {
+  const vehicle = VEHICLE_FLEET.find(
+    (v) => passengers >= v.minPassengers && passengers <= v.maxPassengers
+  );
+  return vehicle?.name || VEHICLE_FLEET[VEHICLE_FLEET.length - 1].name;
+}
+
 function BookingForm() {
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [passengers, setPassengers] = useState<number>(1);
+  const [selectedVehicle, setSelectedVehicle] = useState<string>("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -58,7 +76,7 @@ function BookingForm() {
     const drop = formData.get("drop") as string;
     const date = formData.get("date") as string;
     const time = formData.get("time") as string;
-    const car = formData.get("car") as string;
+    const car = selectedVehicle; // Use auto-selected vehicle
     const notes = formData.get("notes") as string;
 
     if (!date || !time) {
@@ -69,6 +87,14 @@ function BookingForm() {
 
     // Combine date and time
     const bookingDate = new Date(`${date}T${time}`);
+    const now = new Date();
+    const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
+
+    if (bookingDate < oneHourFromNow) {
+      setError("Bookings must be made at least 1 hour in advance.");
+      setLoading(false);
+      return;
+    }
 
     try {
       // 1. Create Booking & Get Price
@@ -148,11 +174,61 @@ function BookingForm() {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="pickup">Pickup Location</Label>
-          <Input id="pickup" name="pickup" required placeholder="YYC Airport" />
+          <Input
+            id="pickup"
+            name="pickup"
+            required
+            defaultValue="Airport"
+            readOnly
+            className="bg-muted text-muted-foreground cursor-not-allowed"
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="drop">Drop-off Location</Label>
-          <Input id="drop" name="drop" required placeholder="Banff Springs Hotel" />
+          <Select name="drop" required>
+            <SelectTrigger id="drop" className="w-full">
+              <SelectValue placeholder="Select Destination" />
+            </SelectTrigger>
+            <SelectContent
+              className="max-h-[300px] z-[9999] !bg-background border-2 border-border shadow-2xl !opacity-100"
+              style={{
+                backgroundColor: "var(--background)",
+                opacity: 1,
+                zIndex: 9999,
+              }}
+            >
+              {[
+                "Solara",
+                "Super 8",
+                "World mark",
+                "Silvertip resort",
+                "Malcom hotel",
+                "Lodges of Canmore",
+                "Wind tower",
+                "Northwinds",
+                "Blackstone Mountain Lodge",
+                "Rocky Mountain Ski Lodge",
+                "Pocaterra Inn & Waterslide",
+                "Coast Canmore Hotel & Conference Centre",
+                "Chateau Canmore",
+                "Falcon Crest Lodge",
+                "Grande Rockies Resort ‑ Bellstar Hotels & Resorts",
+                "Stoneridge Mountain Resort",
+                "Silver Creek Lodge",
+                "Mystic Springs Chalets",
+                "WorldMark Canmore",
+                "Banff Boundary Lodge",
+                "Rundle chalet",
+                "Skyridge 401",
+                "Banff woods lodge",
+                "Copperstone Resort Hotel",
+              ].map((loc) => (
+                <SelectItem key={loc} value={loc}>
+                  {loc}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -167,12 +243,44 @@ function BookingForm() {
         </div>
       </div>
 
-      {/* Vehicle Selection - Portal handles layering */}
+      {/* Passenger Count - NEW */}
       <div className="space-y-2">
-        <Label htmlFor="car">Select Vehicle</Label>
-        <Select name="car" required>
+        <Label htmlFor="passengers">Number of Passengers *</Label>
+        <Input
+          id="passengers"
+          name="passengers"
+          type="number"
+          min="1"
+          max="20"
+          required
+          value={passengers}
+          onChange={(e) => {
+            const count = parseInt(e.target.value) || 1;
+            setPassengers(count);
+            const recommended = getRecommendedVehicle(count);
+            setSelectedVehicle(recommended);
+          }}
+          placeholder="Enter number of passengers"
+          className="text-foreground"
+        />
+        {passengers > 0 && selectedVehicle && (
+          <p className="text-xs text-accent font-medium">
+            ✓ Recommended: {selectedVehicle}
+          </p>
+        )}
+      </div>
+
+      {/* Vehicle Selection - Auto-populated based on passengers */}
+      <div className="space-y-2">
+        <Label htmlFor="car">Selected Vehicle</Label>
+        <Select
+          name="car"
+          required
+          value={selectedVehicle}
+          onValueChange={setSelectedVehicle}
+        >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Choose a vehicle" />
+            <SelectValue placeholder="Select passenger count first" />
           </SelectTrigger>
           <SelectContent
             position="popper"
@@ -186,10 +294,11 @@ function BookingForm() {
               zIndex: 9999,
             }}
           >
-            <SelectItem value="Executive Sedan">Executive Sedan (1-3 Pax)</SelectItem>
-            <SelectItem value="Luxury SUV">Luxury SUV (1-6 Pax)</SelectItem>
-            <SelectItem value="Executive Van">Executive Van (6-10 Pax)</SelectItem>
-            <SelectItem value="Stretch Limousine">Stretch Limousine (8-12 Pax)</SelectItem>
+            {VEHICLE_FLEET.map((vehicle) => (
+              <SelectItem key={vehicle.name} value={vehicle.name}>
+                {vehicle.name} ({vehicle.minPassengers}-{vehicle.maxPassengers} passengers)
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

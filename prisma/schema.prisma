@@ -20,6 +20,7 @@ model User {
   // 🔥 REQUIRED RELATION (you were missing this)
   bookings  Booking[]
 
+  role      String     @default("user") // "user" or "admin"
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -57,7 +58,7 @@ model Booking {
   date       DateTime
   car        String
 
-  status     String   @default("Pending") // Pending, Approved, InProgress, Completed
+  status     String   @default("Pending") // Pending, Approved, InProgress, AwaitingFinalPayment, Completed, Cancelled
   payment50  Boolean  @default(false)
   payment100 Boolean  @default(false)
 
@@ -65,6 +66,9 @@ model Booking {
   depositAmount   Float?
   stripeSessionId String? @unique
   stripePaymentIntentId String?
+
+  finalPaymentUrl String?
+  completedAt     DateTime?
 
   user       User     @relation(fields: [userId], references: [id])
 

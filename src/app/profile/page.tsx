@@ -33,6 +33,7 @@ interface Booking {
   status: string;
   payment50: boolean;
   payment100: boolean;
+  finalPaymentUrl?: string;
   createdAt: string;
 }
 
@@ -164,8 +165,21 @@ function ProfileContent() {
                     Booking ID: {activeBooking.id}
                   </CardDescription>
                 </div>
-                <div className="px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
-                  {activeBooking.status}
+                <div className="flex flex-col items-end gap-2">
+                  <div className="px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
+                    {activeBooking.status}
+                  </div>
+                  {/* Driver Details */}
+                  <div className="text-right">
+                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                      Your Chauffeur
+                    </p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {activeBooking.car.includes("SUV")
+                        ? "+1 (403) 953-1998"
+                        : "+1 (437) 990-4858"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -212,8 +226,11 @@ function ProfileContent() {
                     <div>
                       <p className="text-sm font-medium">Payment Status</p>
                       <p className="text-foreground/80">
-                        50% Deposit:{" "}
-                        {activeBooking.payment50 ? "Paid" : "Pending"}
+                        {activeBooking.payment100
+                          ? "Fully Paid"
+                          : activeBooking.payment50
+                          ? "Deposit Paid (50% Remaining)"
+                          : "Pending Deposit"}
                       </p>
                     </div>
                   </div>
@@ -227,6 +244,18 @@ function ProfileContent() {
                     onClick={() => cancelBooking(activeBooking.id)}
                   >
                     Cancel Booking
+                  </Button>
+                </div>
+              )}
+
+              {activeBooking.status === "AwaitingFinalPayment" && activeBooking.finalPaymentUrl && (
+                <div className="pt-4 flex justify-end">
+                  <Button
+                    size="lg"
+                    className="bg-accent text-accent-foreground hover:opacity-90"
+                    onClick={() => window.location.href = activeBooking.finalPaymentUrl!}
+                  >
+                    Pay Remaining 50%
                   </Button>
                 </div>
               )}

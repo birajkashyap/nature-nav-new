@@ -62,7 +62,7 @@ const Home = () => {
       isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
     }`}
           >
-            Premium Chauffeur Services
+            Premium Shuttle Services
           </h1>
 
           <p
@@ -138,6 +138,76 @@ const Home = () => {
               alt="Luxury Interior"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* FIFA 2026 PROMOTION */}
+      <section className="py-24 px-4 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/30 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Image */}
+            <div className="order-2 lg:order-1 rounded-2xl overflow-hidden shadow-2xl border-2 border-accent/30 group">
+              <img
+                src="/fifa-2026.png"
+                alt="FIFA 2026 VIP Transportation"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+
+            {/* Content */}
+            <div className="order-1 lg:order-2 space-y-6 text-white">
+              <div className="inline-block px-4 py-2 bg-accent/20 border border-accent/50 rounded-full mb-4">
+                <span className="text-accent font-semibold text-sm tracking-wide">🏆 SPECIAL EVENT</span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-luxury text-accent leading-tight">
+                FIFA World Cup 2026
+              </h2>
+
+              <p className="text-2xl font-semibold text-white/90">
+                Your VIP Ride to the Tournament
+              </p>
+
+              <p className="text-lg text-white/70 leading-relaxed">
+                Experience the excitement of FIFA World Cup 2026 in style! 
+                Book your premium shuttle service for seamless transportation 
+                to and from the matches. Travel in luxury with Nature Navigator.
+              </p>
+
+              <ul className="space-y-3 text-white/80">
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Executive vehicles with premium amenities
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Professional chauffeurs with local expertise
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Direct service from Calgary to match venues
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Group packages available for teams & fans
+                </li>
+              </ul>
+
+              <div className="pt-6">
+                <Link
+                  href="/contact"
+                  className="inline-block bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-lg px-10 py-4 rounded-full shadow-xl transition-all hover:scale-105 hover:shadow-accent/50">
+                  Reserve Your FIFA 2026 Ride
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>

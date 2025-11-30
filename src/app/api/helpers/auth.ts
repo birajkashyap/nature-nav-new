@@ -18,3 +18,15 @@ export async function requireAuth() {
   }
   return userId;
 }
+
+import { adminAuthOptions } from "@/lib/auth-admin";
+
+export async function requireAdmin() {
+  const session = await getServerSession(adminAuthOptions);
+  const role = (session?.user as any)?.role;
+
+  if (role !== "admin") {
+    throw new Error("Forbidden: Admin access required");
+  }
+  return session?.user?.email; // Return email or id
+}
