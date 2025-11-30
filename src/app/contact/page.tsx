@@ -38,10 +38,8 @@ const stripePromise = loadStripe(
 
 // Vehicle fleet configuration - easily extensible for future vehicles
 const VEHICLE_FLEET = [
-  { name: "Executive Sedan", minPassengers: 1, maxPassengers: 4 },
-  { name: "Luxury SUV (7 Passengers)", minPassengers: 5, maxPassengers: 7 },
-  { name: "Executive Van", minPassengers: 8, maxPassengers: 11 },
-  { name: "Transit Van (14 Passengers)", minPassengers: 12, maxPassengers: 14 },
+  { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 },
+  { name: "Transit Van (14 Passengers)", minPassengers: 8, maxPassengers: 14 },
   // Add more vehicles here as fleet expands
 ];
 
@@ -296,7 +294,7 @@ function BookingForm() {
           >
             {VEHICLE_FLEET.map((vehicle) => (
               <SelectItem key={vehicle.name} value={vehicle.name}>
-                {vehicle.name} ({vehicle.minPassengers}-{vehicle.maxPassengers} passengers)
+                {vehicle.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -332,11 +330,6 @@ function BookingForm() {
 }
 
 const contactInfo = [
-  {
-    icon: Phone,
-    title: "Phone",
-    value: "+1 (555) 123-4567",
-  },
   {
     icon: Mail,
     title: "Email",

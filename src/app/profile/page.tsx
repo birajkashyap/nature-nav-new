@@ -143,7 +143,11 @@ function ProfileContent() {
       {success && (
         <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg flex items-center gap-3 text-green-600 dark:text-green-400">
           <CheckCircle className="h-5 w-5" />
-          <p>Payment successful! Your booking has been approved.</p>
+          <p>
+            {success === 'final_payment' 
+              ? 'Thank you! Your ride has been successfully completed. We hope you enjoyed the journey!' 
+              : 'Payment successful! Your booking has been approved.'}
+          </p>
         </div>
       )}
 

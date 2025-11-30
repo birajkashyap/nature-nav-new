@@ -18,51 +18,30 @@ gsap.registerPlugin(ScrollTrigger);
 
 const fleetData = [
   {
-    name: "Executive Sedan",
-    image: "/sedan.jpg",
-    capacity: "1-3 passengers",
-    luggage: "2-3 bags",
-    features: ["Mercedes S-Class", "Premium leather", "WiFi", "Refreshments"],
-    description: "Perfect for business meetings and airport transfers.",
-  },
-  {
     name: "Luxury SUV",
     image: "/suv.jpg",
-    capacity: "1-6 passengers",
+    capacity: "Up to 7 passengers",
     luggage: "4-6 bags",
     features: [
-      "Range Rover / Escalade",
-      "Spacious interior",
+      "Premium leather interior",
+      "Spacious & comfortable",
       "Entertainment system",
-      "Privacy glass",
+      "Climate control",
     ],
-    description: "Ideal for families and group travel.",
+    description: "Perfect for families, small groups, and airport transfers.",
   },
   {
-    name: "Executive Van",
+    name: "Transit Van",
     image: "/van.jpg",
-    capacity: "6-10 passengers",
-    luggage: "8-10 bags",
+    capacity: "Up to 14 passengers",
+    luggage: "10-14 bags",
     features: [
       "Mercedes Sprinter",
       "Comfortable seating",
-      "USB charging",
+      "USB charging ports",
       "Climate control",
     ],
-    description: "Perfect for corporate groups and events.",
-  },
-  {
-    name: "Stretch Limousine",
-    image: "/limo.jpg",
-    capacity: "8-12 passengers",
-    luggage: "6-8 bags",
-    features: [
-      "Bar service",
-      "Premium sound system",
-      "LED lighting",
-      "Privacy partition",
-    ],
-    description: "Ultimate luxury for special occasions.",
+    description: "Ideal for larger groups, corporate events, and weddings.",
   },
 ];
 
