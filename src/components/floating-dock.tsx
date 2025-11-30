@@ -134,6 +134,17 @@ const FloatingDock = () => {
     >
       <nav className="glass-dock rounded-full py-2 px-4 lg:py-3 lg:px-6 pointer-events-auto">
         <ul className="flex items-center space-x-2">
+          {/* Logo */}
+          <li className="pr-3 border-r border-card/30">
+            <Link href="/" className="block">
+              <img
+                src="/logo.png"
+                alt="Nature Navigator"
+                className="h-10 w-10 rounded-full object-cover ring-2 ring-accent/20 hover:ring-accent/40 transition-all"
+              />
+            </Link>
+          </li>
+
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href;
             

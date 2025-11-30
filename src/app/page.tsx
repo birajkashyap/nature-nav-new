@@ -121,13 +121,14 @@ const Home = () => {
             </h2>
 
             <p className="text-xl text-foreground/80 leading-relaxed animate-fade-in-delay-1">
-              <strong>Nature Navigator</strong> provides VIP limousine and
-              executive transportation across the Canadian Rockies.
+              <strong>Nature Navigator</strong> provides premium shuttle and
+              executive transportation across the Canadian Rockies. Experience luxury travel
+              with Nature Navigator's professional chauffeur services.
             </p>
 
             <div className="pt-4 flex items-center text-lg text-foreground/70 animate-fade-in-delay-2">
               <MapPin className="w-5 h-5 mr-2 text-accent" />
-              <strong>Service Area:</strong> Canmore, Banff, Jasper, Calgary,
+              <strong>Nature Navigator Service Area:</strong> Canmore, Banff, Jasper, Calgary,
               and more.
             </div>
           </div>
@@ -176,9 +177,9 @@ const Home = () => {
               </p>
 
               <p className="text-lg text-foreground/70 dark:text-white/70 leading-relaxed">
-                Experience the excitement of FIFA World Cup 2026 in style! 
+                Experience the excitement of FIFA World Cup 2026 in style with Nature Navigator! 
                 Book your premium shuttle service for seamless transportation 
-                to and from the matches. Travel in luxury with Nature Navigator.
+                to and from the matches. Nature Navigator delivers luxury travel you can trust.
               </p>
 
               <ul className="space-y-3 text-foreground/80 dark:text-white/80">

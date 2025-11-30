@@ -476,21 +476,22 @@ const ContactPage = () => {
       ref={mainRef}
       className="min-h-screen pt-32 pb-24 px-4 font-body"
     >
-      <div className="max-w-7xl mx-auto space-y-20">
-        <header className="text-center contact-animate">
-          <h1 className="text-6xl md:text-7xl font-luxury mb-4 text-foreground/95">
-            Contact & Book
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Reserve your luxury ride or get in touch with our team. We are
-            available 24/7 to coordinate your travel.
-          </p>
-        </header>
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12">
+        {/* Left: Contact Info */}
+        <div className="space-y-8">
+          <div className="contact-animate">
+            <h1 className="font-luxury text-5xl md:text-6xl mb-4 text-foreground/95">
+              Reserve Your Ride
+            </h1>
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              Experience premium shuttle services with Nature Navigator. Book your luxury transportation 
+              across the Canadian Rockies today.
+            </p>
+          </div>
 
-        <section className="grid lg:grid-cols-2 gap-12">
           <div className="space-y-6 contact-animate">
             <h2 className="text-4xl font-luxury text-accent">
-              Reserve Your Ride
+              Booking Form
             </h2>
             <BookingForm />
           </div>
@@ -523,8 +524,9 @@ const ContactPage = () => {
               </p>
             </Card>
           </div>
-        </section>
+        </div>
 
+        {/* Right: FAQ */}
         <section className="pt-16 contact-animate">
           <div className="text-center mb-12">
             <h2 className="text-5xl font-luxury text-foreground/95">
