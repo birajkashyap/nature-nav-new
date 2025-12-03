@@ -28,6 +28,7 @@ import {
   SelectValue,
   SelectPortal,
 } from "@/components/ui/select";
+import { WeddingBookingForm } from "@/components/wedding-booking-form";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -445,6 +446,7 @@ GSAPAccordionContent.displayName = "GSAPAccordionContent";
 
 const ContactPage = () => {
   const mainRef = useRef<HTMLDivElement>(null);
+  const [bookingType, setBookingType] = useState<'airport' | 'wedding'>('airport');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -489,11 +491,57 @@ const ContactPage = () => {
             </p>
           </div>
 
+          {/* Service Type Selector - NEW */}
+          <div className="space-y-4 contact-animate">
+            <Label htmlFor="serviceType" className="text-lg font-semibold text-accent">
+              Select Service Type
+            </Label>
+            <Select 
+              value={bookingType} 
+              onValueChange={(value: 'airport' | 'wedding') => setBookingType(value)}
+            >
+              <SelectTrigger className="h-12">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent
+                position="popper"
+                side="bottom"
+                align="start"
+                sideOffset={4}
+                className="z-[9999] !bg-background border-2 border-border shadow-2xl !opacity-100"
+                style={{
+                  backgroundColor: 'var(--background)',
+                  opacity: 1,
+                  zIndex: 9999,
+                }}
+              >
+                <SelectItem value="airport">
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Airport Transfer</span>
+                    <span className="text-xs text-muted-foreground">YYC ↔ Canmore/Banff</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="wedding">
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Wedding Shuttle Service</span>
+                    <span className="text-xs text-muted-foreground">4-hour service from $850</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Conditional Form Rendering */}
           <div className="space-y-6 contact-animate">
             <h2 className="text-4xl font-luxury text-accent">
-              Booking Form
+              {bookingType === 'airport' ? 'Airport Transfer Details' : 'Wedding Shuttle Booking'}
             </h2>
-            <BookingForm />
+            
+            {bookingType === 'airport' ? (
+              <BookingForm />
+            ) : (
+              <WeddingBookingForm />
+            )}
           </div>
 
           <div className="space-y-8 contact-animate">

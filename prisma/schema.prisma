@@ -8,32 +8,32 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  name      String?
-  email     String?    @unique
-  password  String?    // nullable for Google OAuth users
-  image     String?
+  id       String  @id @default(cuid())
+  name     String?
+  email    String? @unique
+  password String? // nullable for Google OAuth users
+  image    String?
 
-  accounts  Account[]
-  sessions  Session[]
+  accounts Account[]
+  sessions Session[]
 
   // 🔥 REQUIRED RELATION (you were missing this)
-  bookings  Booking[]
+  bookings Booking[]
 
-  role      String     @default("user") // "user" or "admin"
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  role      String   @default("user") // "user" or "admin"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
 
   user User @relation(fields: [userId], references: [id])
 
@@ -50,27 +50,83 @@ model Session {
 }
 
 model Booking {
-  id         String   @id @default(cuid())
-  userId     String
+  id     String @id @default(cuid())
+  userId String
 
-  pickup     String
-  drop       String
-  date       DateTime
-  car        String
+  pickup String
+  drop   String
+  date   DateTime
+  car    String
+  notes  String?
 
-  status     String   @default("Pending") // Pending, Approved, InProgress, AwaitingFinalPayment, Completed, Cancelled
-  payment50  Boolean  @default(false)
-  payment100 Boolean  @default(false)
+  status     String  @default("Pending") // Pending, Approved, InProgress, AwaitingFinalPayment, Completed, Cancelled
+  payment50  Boolean @default(false)
+  payment100 Boolean @default(false)
 
-  totalPrice      Float?
-  depositAmount   Float?
-  stripeSessionId String? @unique
+  totalPrice            Float?
+  depositAmount         Float?
+  stripeSessionId       String? @unique
   stripePaymentIntentId String?
 
   finalPaymentUrl String?
   completedAt     DateTime?
 
-  user       User     @relation(fields: [userId], references: [id])
+  // NEW: Booking type to differentiate services
+  bookingType BookingType @default(AIRPORT_TRANSFER)
 
-  createdAt  DateTime @default(now())
+  // NEW: Wedding-specific fields
+  eventStartTime  DateTime?
+  eventEndTime    DateTime?
+  basePrice       Float? // For wedding: $850
+  hourlyRate      Float? // SUV: $163/hr, Van: $213/hr
+  additionalHours Int?      @default(0)
+
+  // NEW: Airport-specific fields
+  route String? // "YYC-Canmore", "YYC-Banff"
+
+  // Relations
+  user   User           @relation(fields: [userId], references: [id])
+  addOns BookingAddOn[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([userId])
+  @@index([bookingType])
+  @@index([status])
+}
+
+// NEW: Booking Type Enum
+enum BookingType {
+  AIRPORT_TRANSFER
+  WEDDING_SHUTTLE
+  CEREMONY_PICKUP
+  CUSTOM
+}
+
+// NEW: Add-On Services Model
+model BookingAddOn {
+  id        String  @id @default(cuid())
+  bookingId String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  addOnType      AddOnType
+  serviceName    String
+  price          Float
+  duration       Int? // hours
+  pickupLocation String?
+  dropLocation   String?
+  notes          String?
+
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+// NEW: Add-On Type Enum
+enum AddOnType {
+  CEREMONY_PICKUP_DROPOFF
+  EXTRA_STOP
+  EXTENDED_HOURS
+  CUSTOM
 }

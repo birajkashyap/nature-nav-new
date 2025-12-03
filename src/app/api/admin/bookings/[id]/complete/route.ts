@@ -27,9 +27,8 @@ export async function POST(
     // Check removed to avoid TS errors, validation happens below with casted values
 
     // Calculate remaining amount
-    // Floating point math can be tricky, so we work with cents if possible or round carefully
-    const totalPrice = (booking as any).totalPrice;
-    const depositAmount = (booking as any).depositAmount;
+    const totalPrice = booking.totalPrice;
+    const depositAmount = booking.depositAmount;
 
     if (!totalPrice || !depositAmount) {
       return NextResponse.json(
@@ -81,7 +80,7 @@ export async function POST(
       data: {
         status: "AwaitingFinalPayment",
         finalPaymentUrl: session.url,
-      } as any,
+      },
     });
 
     return NextResponse.json({ 
