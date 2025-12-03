@@ -144,7 +144,7 @@ const Home = () => {
       </section>
 
       {/* FIFA 2026 PROMOTION */}
-      <section className="py-24 px-4 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-zinc-900 dark:via-zinc-950 dark:to-black relative overflow-hidden">
+      <section className="py-24 px-4 bg-muted/30 relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
@@ -163,7 +163,7 @@ const Home = () => {
             </div>
 
             {/* Content */}
-            <div className="order-1 lg:order-2 space-y-6 text-foreground dark:text-white">
+            <div className="order-1 lg:order-2 space-y-6">
               <div className="inline-block px-4 py-2 bg-accent/20 border border-accent/50 rounded-full mb-4">
                 <span className="text-accent font-semibold text-sm tracking-wide">🏆 SPECIAL EVENT</span>
               </div>
@@ -172,17 +172,17 @@ const Home = () => {
                 FIFA World Cup 2026
               </h2>
 
-              <p className="text-2xl font-semibold text-foreground/90 dark:text-white/90">
+              <p className="text-2xl font-semibold text-foreground/90">
                 Your VIP Ride to the Tournament
               </p>
 
-              <p className="text-lg text-foreground/70 dark:text-white/70 leading-relaxed">
+              <p className="text-lg text-foreground/70 leading-relaxed">
                 Experience the excitement of FIFA World Cup 2026 in style with Nature Navigator! 
                 Book your premium shuttle service for seamless transportation 
                 to and from the matches. Nature Navigator delivers luxury travel you can trust.
               </p>
 
-              <ul className="space-y-3 text-foreground/80 dark:text-white/80">
+              <ul className="space-y-3 text-foreground/80">
                 <li className="flex items-start">
                   <span className="text-accent mr-2">✓</span>
                   Executive vehicles with premium amenities

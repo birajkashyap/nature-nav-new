@@ -80,7 +80,13 @@ export function WeddingBookingForm() {
     try {
       // Create booking date from event date and start time
       const bookingDate = new Date(`${eventDate}T${eventStartTime}`);
-      const eventEnd = new Date(`${eventDate}T${eventEndTime}`);
+      let eventEnd = new Date(`${eventDate}T${eventEndTime}`);
+      
+      // If end time is earlier than start time, the event crosses midnight
+      // Add one day to the end date
+      if (eventEnd <= bookingDate) {
+        eventEnd = new Date(eventEnd.getTime() + 24 * 60 * 60 * 1000);
+      }
 
       const res = await fetch("/api/bookings", {
         method: "POST",
