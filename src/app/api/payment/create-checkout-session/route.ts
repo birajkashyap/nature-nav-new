@@ -39,7 +39,8 @@ export async function POST(req: Request) {
               name: `Deposit for ${booking.car} - ${booking.pickup} to ${booking.drop}`,
               description: `Total Trip Price: $${booking.totalPrice}`,
             },
-            unit_amount: Math.round(booking.depositAmount * 100), // Use DB amount
+            unit_amount: 60, // TEMPORARY TEST: 0.6 CAD - ROLLBACK AFTER TESTING!
+            // unit_amount: Math.round(booking.depositAmount * 100), // ORIGINAL - RESTORE THIS!
           },
           quantity: 1,
         },
