@@ -34,13 +34,12 @@ export async function POST(req: Request) {
       line_items: [
         {
           price_data: {
-            currency: "inr", // TEMPORARY TEST: INR - ROLLBACK TO "cad"!
+            currency: "cad",
             product_data: {
               name: `Deposit for ${booking.car} - ${booking.pickup} to ${booking.drop}`,
               description: `Total Trip Price: $${booking.totalPrice}`,
             },
-            unit_amount: 5000, // TEMPORARY TEST: ₹50 INR - ROLLBACK AFTER TEST!
-            // unit_amount: Math.round(booking.depositAmount * 100), // ORIGINAL - RESTORE THIS!
+            unit_amount: Math.round(booking.depositAmount * 100), // Use DB amount
           },
           quantity: 1,
         },
