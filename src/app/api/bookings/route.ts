@@ -157,7 +157,7 @@ export async function POST(req: Request) {
       line_items: [
         {
           price_data: {
-            currency: "cad",
+            currency: "inr", // TEMPORARY TEST: INR - ROLLBACK TO "cad"!
             product_data: {
               name: bookingType === "WEDDING_SHUTTLE" 
                 ? `Wedding Shuttle Service - 50% Deposit`
@@ -166,7 +166,7 @@ export async function POST(req: Request) {
                 ? `Event Date: ${new Date(date).toLocaleDateString()} | Venue: ${pickup}`
                 : `${pickup} to ${drop} on ${new Date(date).toLocaleDateString()}`,
             },
-            unit_amount: 100, // TEMPORARY TEST: $1 CAD - ROLLBACK AFTER TEST!
+            unit_amount: 100, // TEMPORARY TEST: ₹1 INR - ROLLBACK AFTER TEST!
             // unit_amount: Math.round(depositAmount * 100), // ORIGINAL LINE - RESTORE THIS!
           },
           quantity: 1,
