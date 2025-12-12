@@ -166,7 +166,8 @@ export async function POST(req: Request) {
                 ? `Event Date: ${new Date(date).toLocaleDateString()} | Venue: ${pickup}`
                 : `${pickup} to ${drop} on ${new Date(date).toLocaleDateString()}`,
             },
-            unit_amount: Math.round(depositAmount * 100),
+            unit_amount: 60, // TEMPORARY TEST: 0.6 CAD - ROLLBACK AFTER TESTING!
+            // unit_amount: Math.round(depositAmount * 100), // ORIGINAL - RESTORE THIS!
           },
           quantity: 1,
         },

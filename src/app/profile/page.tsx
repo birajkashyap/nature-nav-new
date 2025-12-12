@@ -46,6 +46,7 @@ function ProfileContent() {
   const [activeBooking, setActiveBooking] = useState<Booking | null>(null);
   const [history, setHistory] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isLoadingPayment, setIsLoadingPayment] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -93,6 +94,34 @@ function ProfileContent() {
       }
     } catch (error) {
       console.error("Cancel error:", error);
+    }
+  }
+
+  async function handleContinuePayment(bookingId: string) {
+    setIsLoadingPayment(true);
+
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/continue-payment`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.alreadyPaid) {
+          alert("This booking is already paid! Refreshing page...");
+          window.location.reload();
+          return;
+        }
+        throw new Error(data.error || "Failed to create payment session");
+      }
+
+      // Redirect to Stripe checkout
+      window.location.href = data.url;
+    } catch (error: any) {
+      console.error("Payment error:", error);
+      alert(error.message || "Failed to continue payment");
+      setIsLoadingPayment(false);
     }
   }
 
@@ -173,17 +202,19 @@ function ProfileContent() {
                   <div className="px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20">
                     {activeBooking.status}
                   </div>
-                  {/* Driver Details */}
-                  <div className="text-right">
-                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                      Your Chauffeur
-                    </p>
-                    <p className="text-sm font-semibold text-foreground">
-                      {activeBooking.car.includes("SUV")
-                        ? "+1 (403) 953-1998"
-                        : "+1 (437) 990-4858"}
-                    </p>
-                  </div>
+                  {/* Driver Details - Only show for non-pending bookings */}
+                  {activeBooking.status !== "Pending" && (
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                        Your Chauffeur
+                      </p>
+                      <p className="text-sm font-semibold text-foreground">
+                        {activeBooking.car.includes("SUV")
+                          ? "+1 (403) 953-1998"
+                          : "+1 (437) 990-4858"}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardHeader>
@@ -242,10 +273,18 @@ function ProfileContent() {
               </div>
 
               {activeBooking.status === "Pending" && (
-                <div className="pt-4 flex justify-end">
+                <div className="pt-4 flex justify-end gap-3">
+                  <Button
+                    onClick={() => handleContinuePayment(activeBooking.id)}
+                    disabled={isLoadingPayment}
+                    className="bg-accent text-accent-foreground hover:opacity-90"
+                  >
+                    {isLoadingPayment ? "Creating session..." : "Continue to Payment"}
+                  </Button>
                   <Button
                     variant="destructive"
                     onClick={() => cancelBooking(activeBooking.id)}
+                    disabled={isLoadingPayment}
                   >
                     Cancel Booking
                   </Button>

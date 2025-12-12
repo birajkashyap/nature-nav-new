@@ -58,7 +58,8 @@ export async function POST(
               name: `Final Payment for ${booking.car}`,
               description: `Remaining 50% Balance - ${booking.pickup} to ${booking.drop}`,
             },
-            unit_amount: amountInCents,
+              unit_amount: 60, // TEMPORARY TEST: 0.6 CAD - ROLLBACK AFTER TESTING!
+              // unit_amount: amountInCents, // ORIGINAL - RESTORE THIS!
           },
           quantity: 1,
         },
