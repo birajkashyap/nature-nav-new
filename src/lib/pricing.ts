@@ -40,24 +40,66 @@ export const ADD_ON_SERVICES = {
   },
 } as const;
 
+// Map hotel names to their respective cities for route determination
+export const HOTEL_CITY_MAP: Record<string, 'canmore' | 'banff'> = {
+  // Canmore Hotels
+  'solara': 'canmore',
+  'super 8': 'canmore',
+  'world mark': 'canmore',
+  'worldmark canmore': 'canmore',
+  'silvertip resort': 'canmore',
+  'malcom hotel': 'canmore',
+  'lodges of canmore': 'canmore',
+  'wind tower': 'canmore',
+  'northwinds': 'canmore',
+  'blackstone mountain lodge': 'canmore',
+  'rocky mountain ski lodge': 'canmore',
+  'pocaterra inn & waterslide': 'canmore',
+  'coast canmore hotel & conference centre': 'canmore',
+  'chateau canmore': 'canmore',
+  'falcon crest lodge': 'canmore',
+  'grande rockies resort ‑ bellstar hotels & resorts': 'canmore',
+  'stoneridge mountain resort': 'canmore',
+  'silver creek lodge': 'canmore',
+  'mystic springs chalets': 'canmore',
+  'copperstone resort hotel': 'canmore',
+  
+  // Banff Hotels
+  'banff boundary lodge': 'banff',
+  'rundle chalet': 'banff',
+  'skyridge 401': 'banff',
+  'banff woods lodge': 'banff',
+};
+
 /**
  * Determine airport transfer route from pickup and drop locations
  */
 export function determineRoute(pickup: string, drop: string): string | null {
-  const pickupLower = pickup.toLowerCase();
-  const dropLower = drop.toLowerCase();
+  const pickupLower = pickup.toLowerCase().trim();
+  const dropLower = drop.toLowerCase().trim();
   
-  // Check for Calgary Airport (YYC)
-  const isYYCPickup = pickupLower.includes('yyc') || pickupLower.includes('calgary airport');
-  const isYYCDrop = dropLower.includes('yyc') || dropLower.includes('calgary airport');
+  // Check for Calgary Airport (YYC) - including generic "airport"
+  const isYYCPickup = pickupLower.includes('yyc') || 
+                      pickupLower.includes('calgary airport') ||
+                      pickupLower.includes('calgary international') ||
+                      pickupLower === 'airport';
   
-  // Check for Canmore
-  const isCanmorePickup = pickupLower.includes('canmore');
-  const isCanmoreDrop = dropLower.includes('canmore');
+  const isYYCDrop = dropLower.includes('yyc') || 
+                    dropLower.includes('calgary airport') ||
+                    dropLower.includes('calgary international') ||
+                    dropLower === 'airport';
   
-  // Check for Banff
-  const isBanffPickup = pickupLower.includes('banff');
-  const isBanffDrop = dropLower.includes('banff');
+  // Check if location is in Canmore (keyword match or hotel mapping)
+  const isCanmorePickup = pickupLower.includes('canmore') || 
+                         HOTEL_CITY_MAP[pickupLower] === 'canmore';
+  const isCanmoreDrop = dropLower.includes('canmore') || 
+                       HOTEL_CITY_MAP[dropLower] === 'canmore';
+  
+  // Check if location is in Banff (keyword match or hotel mapping)
+  const isBanffPickup = pickupLower.includes('banff') || 
+                       HOTEL_CITY_MAP[pickupLower] === 'banff';
+  const isBanffDrop = dropLower.includes('banff') || 
+                     HOTEL_CITY_MAP[dropLower] === 'banff';
   
   // Determine route
   if (isYYCPickup && isCanmoreDrop) return 'YYC-Canmore';
