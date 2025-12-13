@@ -80,6 +80,26 @@ const AboutPage = () => {
           </p>
         </div>
 
+        {/* --- Founder Story Section --- */}
+        <div className="about-animate mb-20">
+          <div className="max-w-4xl mx-auto bg-card shadow-xl p-10 rounded-2xl border border-muted/30 dark:border-muted/50">
+            <h2 className="text-4xl font-luxury text-accent dark:text-accent-dark mb-6 text-center">
+              Our Story
+            </h2>
+            <div className="space-y-4 text-lg leading-relaxed text-foreground/85">
+              <p>
+                Founded by lifelong friends <span className="font-semibold text-accent dark:text-accent-dark">Varun</span> and <span className="font-semibold text-accent dark:text-accent-dark">Sourav</span>, Nature Navigator was created out of our love for Canmore and the stunning Bow Valley we've called home for the past five years.
+              </p>
+              <p>
+                Our goal is to make every journey as beautiful and stress-free as the destination itself. Whether you're a local wedding venue, a family celebrating a special day, or a traveler exploring Alberta's breathtaking scenery, our professional drivers ensure you relax while we navigate nature for you.
+              </p>
+              <p>
+                From pick-up to drop-off, Nature Navigator is your trusted partner for comfortable, reliable, and scenic transportation across the Bow Valley.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* --- Stats Section --- */}
         <div className="about-animate mb-20">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-card shadow-lg p-8 rounded-xl border border-muted/30 dark:border-muted/50">
