@@ -76,8 +76,7 @@ export async function POST(
                 ? `Event Date: ${new Date(booking.date).toLocaleDateString()}`
                 : `${booking.pickup} to ${booking.drop} on ${new Date(booking.date).toLocaleDateString()}`,
             },
-            unit_amount: 60, // TEMPORARY TEST: 0.6 CAD - ROLLBACK AFTER TESTING!
-            // unit_amount: Math.round(booking.depositAmount * 100), // ORIGINAL - RESTORE THIS!
+            unit_amount: Math.round(booking.depositAmount * 100),
           },
           quantity: 1,
         },
