@@ -16,6 +16,25 @@ export function useGoogleMaps() {
       return;
     }
 
+    // Check if Google Maps is already loaded
+    if (window.google && window.google.maps) {
+      console.log('✅ Google Maps already loaded!');
+      setIsLoaded(true);
+      return;
+    }
+
+    // Check if script is already being loaded
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+    if (existingScript) {
+      console.log('🔄 Google Maps script already loading...');
+      // Wait for it to load
+      existingScript.addEventListener('load', () => {
+        console.log('✅ Google Maps loaded successfully!');
+        setIsLoaded(true);
+      });
+      return;
+    }
+
     console.log('🔄 Loading Google Maps Places library...');
 
     // Load the Google Maps script dynamically
@@ -30,7 +49,7 @@ export function useGoogleMaps() {
       setIsLoaded(true);
     };
 
-    script.onerror = (err) => {
+    script.onerror = () => {
       const error = new Error('Failed to load Google Maps script');
       console.error('❌ Google Maps loading failed:', error);
       setLoadError(error);

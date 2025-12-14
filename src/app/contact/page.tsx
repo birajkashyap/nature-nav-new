@@ -29,6 +29,8 @@ import {
   SelectPortal,
 } from "@/components/ui/select";
 import { WeddingBookingForm } from "@/components/wedding-booking-form";
+import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
+import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,10 +57,22 @@ function getRecommendedVehicle(passengers: number): string {
 function BookingForm() {
   const { data: session } = useSession();
   const router = useRouter();
+  const { isLoaded: mapsLoaded } = useGoogleMaps();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [passengers, setPassengers] = useState<number>(1);
   const [selectedVehicle, setSelectedVehicle] = useState<string>("");
+  
+  // Location state
+  const [pickup, setPickup] = useState("Calgary International Airport");
+  const [pickupPlaceId, setPickupPlaceId] = useState("");
+  const [pickupLat, setPickupLat] = useState<number | null>(null);
+  const [pickupLng, setPickupLng] = useState<number | null>(null);
+  
+  const [drop, setDrop] = useState("");
+  const [dropPlaceId, setDropPlaceId] = useState("");
+  const [dropLat, setDropLat] = useState<number | null>(null);
+  const [dropLng, setDropLng] = useState<number | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -72,8 +86,6 @@ function BookingForm() {
     }
 
     const formData = new FormData(e.currentTarget);
-    const pickup = formData.get("pickup") as string;
-    const drop = formData.get("drop") as string;
     const date = formData.get("date") as string;
     const time = formData.get("time") as string;
     const car = selectedVehicle; // Use auto-selected vehicle
@@ -102,9 +114,19 @@ function BookingForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // Legacy fields
           pickup,
           drop,
-          date: bookingDate.toISOString(), // Ensure date is sent as ISO string
+          // NEW: Structured location data
+          pickupAddress: pickup,
+          pickupPlaceId: pickupPlaceId || null,
+          pickupLat,
+          pickupLng,
+          dropAddress: drop,
+          dropPlaceId: dropPlaceId || null,
+          dropLat,
+          dropLng,
+          date: bookingDate.toISOString(),
           car,
           notes,
         }),
@@ -174,61 +196,51 @@ function BookingForm() {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="pickup">Pickup Location</Label>
-          <Input
-            id="pickup"
-            name="pickup"
-            required
-            defaultValue="Airport"
-            readOnly
-            className="bg-muted text-muted-foreground cursor-not-allowed"
-          />
+          {mapsLoaded ? (
+            <PlacesAutocomplete
+              value={pickup}
+              onChange={setPickup}
+              onPlaceSelect={(place) => {
+                setPickup(place.address);
+                setPickupPlaceId(place.placeId);
+                setPickupLat(place.lat);
+                setPickupLng(place.lng);
+              }}
+              placeholder="Search for pickup location..."
+              required
+            />
+          ) : (
+            <Input
+              value={pickup}
+              onChange={(e) => setPickup(e.target.value)}
+              placeholder="Loading location search..."
+              required
+            />
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="drop">Drop-off Location</Label>
-          <Select name="drop" required>
-            <SelectTrigger id="drop" className="w-full">
-              <SelectValue placeholder="Select Destination" />
-            </SelectTrigger>
-            <SelectContent
-              className="max-h-[300px] z-[9999] !bg-background border-2 border-border shadow-2xl !opacity-100"
-              style={{
-                backgroundColor: "var(--background)",
-                opacity: 1,
-                zIndex: 9999,
+          {mapsLoaded ? (
+            <PlacesAutocomplete
+              value={drop}
+              onChange={setDrop}
+              onPlaceSelect={(place) => {
+                setDrop(place.address);
+                setDropPlaceId(place.placeId);
+                setDropLat(place.lat);
+                setDropLng(place.lng);
               }}
-            >
-              {[
-                "Solara",
-                "Super 8",
-                "World mark",
-                "Silvertip resort",
-                "Malcom hotel",
-                "Lodges of Canmore",
-                "Wind tower",
-                "Northwinds",
-                "Blackstone Mountain Lodge",
-                "Rocky Mountain Ski Lodge",
-                "Pocaterra Inn & Waterslide",
-                "Coast Canmore Hotel & Conference Centre",
-                "Chateau Canmore",
-                "Falcon Crest Lodge",
-                "Grande Rockies Resort ‑ Bellstar Hotels & Resorts",
-                "Stoneridge Mountain Resort",
-                "Silver Creek Lodge",
-                "Mystic Springs Chalets",
-                "WorldMark Canmore",
-                "Banff Boundary Lodge",
-                "Rundle chalet",
-                "Skyridge 401",
-                "Banff woods lodge",
-                "Copperstone Resort Hotel",
-              ].map((loc) => (
-                <SelectItem key={loc} value={loc}>
-                  {loc}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+              placeholder="Search for drop-off location..."
+              required
+            />
+          ) : (
+            <Input
+              value={drop}
+              onChange={(e) => setDrop(e.target.value)}
+              placeholder="Loading location search..."
+              required
+            />
+          )}
         </div>
       </div>
 
