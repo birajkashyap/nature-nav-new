@@ -161,6 +161,11 @@ function ProfileContent() {
             <p className="text-sm text-muted-foreground">
               {session?.user?.email}
             </p>
+            {(session?.user as any)?.phone && (
+              <p className="text-sm text-muted-foreground">
+                📞 {(session?.user as any)?.phone}
+              </p>
+            )}
           </div>
           <Button
             variant="outline"

@@ -12,6 +12,7 @@ model User {
   name     String?
   email    String? @unique
   password String? // nullable for Google OAuth users
+  phone    String? // user's phone number
   image    String?
 
   accounts Account[]

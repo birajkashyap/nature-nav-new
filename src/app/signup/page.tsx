@@ -58,13 +58,13 @@ export default function SignupPage() {
     const form = new FormData(e.target);
     const name = form.get("name") as string;
     const email = form.get("email") as string;
-    const password = form.get("password") as string;
+    const phone = form.get("phone") as string;
 
     // ---- FIX 1: Send JSON to API ----
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, phone }),
     });
 
     const result = await res.json();
@@ -161,6 +161,26 @@ export default function SignupPage() {
                     name="email"
                     required
                     placeholder="you@example.com"
+                    className="
+                      pl-11 h-12 bg-white/10 text-white placeholder:text-gray-300
+                      border border-white/20 rounded-full
+                      focus:border-yellow-300 focus:ring-yellow-200/40
+                    "
+                  />
+                </div>
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <Label className="text-white/80">Phone Number (Optional)</Label>
+                <div className="relative mt-1">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  <Input
+                    type="tel"
+                    name="phone"
+                    placeholder="+1 (555) 123-4567"
                     className="
                       pl-11 h-12 bg-white/10 text-white placeholder:text-gray-300
                       border border-white/20 rounded-full
