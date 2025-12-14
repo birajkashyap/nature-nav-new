@@ -26,6 +26,7 @@ interface Booking {
   user: {
     name: string | null;
     email: string | null;
+    phone: string | null;
   };
 }
 
@@ -80,6 +81,11 @@ export default function AdminDashboardClient({ bookings }: { bookings: any[] }) 
                   {booking.user.name || "Guest"}
                 </div>
                 <div className="text-xs text-zinc-500">{booking.user.email}</div>
+                {booking.user.phone && (
+                  <div className="text-xs text-zinc-500 mt-0.5">
+                    📞 {booking.user.phone}
+                  </div>
+                )}
               </TableCell>
               <TableCell className="text-zinc-300">{booking.car}</TableCell>
               <TableCell className="text-zinc-300">

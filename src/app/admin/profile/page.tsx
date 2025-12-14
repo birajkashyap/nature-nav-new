@@ -16,7 +16,7 @@ export default async function AdminProfilePage() {
     orderBy: { createdAt: "desc" },
     include: {
       user: {
-        select: { name: true, email: true },
+        select: { name: true, email: true, phone: true },
       },
     },
   });
