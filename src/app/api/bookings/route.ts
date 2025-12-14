@@ -81,8 +81,8 @@ export async function POST(req: Request) {
     }
 
     // 3. Calculate Price based on booking type
-    let totalPrice: number;
-    let depositAmount: number;
+    let totalPrice: number = 0;
+    let depositAmount: number = 0;
     let basePrice: number | null = null;
     let hourlyRate: number | null = null;
     let route: string | null = null;
