@@ -1,4 +1,3 @@
-import { Loader } from '@googlemaps/js-api-loader';
 import { useEffect, useState } from 'react';
 
 export function useGoogleMaps() {
@@ -6,21 +5,47 @@ export function useGoogleMaps() {
   const [loadError, setLoadError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
-      setLoadError(new Error('Google Maps API key not found'));
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    
+    console.log('🗺️ Google Maps API Key:', apiKey ? 'Found' : 'NOT FOUND');
+    
+    if (!apiKey) {
+      const error = new Error('Google Maps API key not found');
+      setLoadError(error);
+      console.error('❌ Google Maps Error:', error);
       return;
     }
 
-    const loader = new Loader({
-      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-      version: 'weekly',
-      libraries: ['places'],
-    });
+    console.log('🔄 Loading Google Maps Places library...');
 
-    loader
-      .load()
-      .then(() => setIsLoaded(true))
-      .catch((err: Error) => setLoadError(err));
+    // Load the Google Maps script dynamically
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap`;
+    script.async = true;
+    script.defer = true;
+
+    // Define the callback
+    (window as any).initMap = () => {
+      console.log('✅ Google Maps loaded successfully!');
+      setIsLoaded(true);
+    };
+
+    script.onerror = (err) => {
+      const error = new Error('Failed to load Google Maps script');
+      console.error('❌ Google Maps loading failed:', error);
+      setLoadError(error);
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup
+      const existingScript = document.querySelector(`script[src^="https://maps.googleapis.com/maps/api/js"]`);
+      if (existingScript) {
+        document.head.removeChild(existingScript);
+      }
+      delete (window as any).initMap;
+    };
   }, []);
 
   return { isLoaded, loadError };
