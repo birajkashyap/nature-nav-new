@@ -116,7 +116,8 @@ export async function sendPasswordResetEmail(
               <div class="footer">
                 <p style="margin: 5px 0;">Nature Navigator</p>
                 <p style="margin: 5px 0; color: #999;">Premium Chauffeur Services | Canadian Rockies</p>
-                <p style="margin: 5px 0; font-size: 12px; color: #999;">105 Bow Meadows Crescent, Canmore, AB</p>
+                <p style="margin: 5px 0; font-size: 12px; color: #999;">107 Armstrong Place, Canmore, Alberta</p>
+                <p style="margin: 5px 0; font-size: 12px; color: #999;">info@naturenavigator.ca</p>
               </div>
             </div>
           </body>

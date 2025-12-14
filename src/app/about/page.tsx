@@ -162,9 +162,10 @@ const AboutPage = () => {
             </h3>
             <div className="text-lg text-foreground/80">
               <p className="font-semibold">
-                105 Bow Meadows Crescent, Unit 132, T1W 2W8
+                107 Armstrong Place, Canmore, Alberta
               </p>
-              <p>Canmore, Alberta, Canada.</p>
+              <p>Canada T1W 2W8</p>
+              <p className="mt-2">info@naturenavigator.ca</p>
             </div>
           </div>
         </div>

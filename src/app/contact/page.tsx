@@ -335,12 +335,12 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email",
-    value: "reservations@naturenavigator.com",
+    value: "info@naturenavigator.ca",
   },
   {
     icon: MapPin,
     title: "Location",
-    value: "105 Bow Meadows Crescent, Canmore, AB",
+    value: "107 Armstrong Place, Canmore, Alberta",
   },
   {
     icon: Clock,
