@@ -29,6 +29,7 @@ const fleetData = [
       "Climate control",
     ],
     description: "Perfect for families, small groups, and airport transfers.",
+    comingSoon: true, // SUV temporarily unavailable
   },
   {
     name: "Transit Van",
@@ -42,6 +43,7 @@ const fleetData = [
       "Climate control",
     ],
     description: "Ideal for larger groups, corporate events, and weddings.",
+    comingSoon: false,
   },
 ];
 
@@ -117,6 +119,13 @@ const FleetPage = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
                 </div>
 
+                {/* Coming Soon Badge */}
+                {vehicle.comingSoon && (
+                  <div className="absolute top-4 right-4 bg-accent/90 text-accent-foreground px-4 py-2 rounded-full font-semibold text-sm shadow-lg z-20">
+                    Coming Soon
+                  </div>
+                )}
+
                 <h2 className="absolute bottom-4 left-6 text-4xl font-luxury text-accent-foreground drop-shadow-lg z-10">
                   {vehicle.name}
                 </h2>
@@ -160,13 +169,23 @@ const FleetPage = () => {
               </div>
 
               <div className="p-6 pt-0">
-                <Button
-                  asChild
-                  className="w-full h-12 rounded-full bg-accent dark:bg-accent-dark text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01]"
-                  size="lg"
-                >
-                  <Link href="/contact">Request Booking</Link>
-                </Button>
+                {vehicle.comingSoon ? (
+                  <Button
+                    disabled
+                    className="w-full h-12 rounded-full bg-muted text-muted-foreground font-semibold cursor-not-allowed opacity-60"
+                    size="lg"
+                  >
+                    Available Soon
+                  </Button>
+                ) : (
+                  <Button
+                    asChild
+                    className="w-full h-12 rounded-full bg-accent dark:bg-accent-dark text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01]"
+                    size="lg"
+                  >
+                    <Link href="/contact">Request Booking</Link>
+                  </Button>
+                )}
               </div>
             </Card>
           ))}

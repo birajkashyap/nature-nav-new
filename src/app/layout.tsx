@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import FloatingDock from "@/components/floating-dock";
 import SessionProvider from "@/components/SessionProvider";
 import { Footer } from "@/components/footer";
+import StickyHeader from "@/components/sticky-header";
 const luxuryFont = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -49,6 +50,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider>
+            <StickyHeader />
             {children}
             <FloatingDock />
             <Footer />

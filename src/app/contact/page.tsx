@@ -38,8 +38,9 @@ const stripePromise = loadStripe(
 );
 
 // Vehicle fleet configuration - easily extensible for future vehicles
+// Note: SUV temporarily removed from booking (coming soon), but backend logic preserved
 const VEHICLE_FLEET = [
-  { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 },
+  // { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 }, // Coming Soon
   { name: "Transit Van (14 Passengers)", minPassengers: 8, maxPassengers: 14 },
   // Add more vehicles here as fleet expands
 ];
