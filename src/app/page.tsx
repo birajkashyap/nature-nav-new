@@ -113,6 +113,33 @@ const Home = () => {
       </section>
 
       {/* SUMMARY */}
+      <section ref={summaryRef} className="py-24 px-4 bg-background">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-6">
+            {/* Logo */}
+            <div className="flex justify-start mb-4">
+              <img 
+                src="/logo.png" 
+                alt="Nature Navigator Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
+
+            <h2 className="text-4xl font-luxury text-accent animate-fade-in">
+              Exclusivity & Comfort
+            </h2>
+
+            <p className="text-xl text-foreground/80 leading-relaxed animate-fade-in-delay-1">
+              <strong>Nature Navigator</strong> provides premium shuttle and
+              executive transportation across the Canadian Rockies. Experience luxury travel
+              with Nature Navigator's professional chauffeur services.
+            </p>
+
+            <div className="pt-4 flex items-center text-lg text-foreground/70 animate-fade-in-delay-2">
+              <MapPin className="w-5 h-5 mr-2 text-accent" />
+              <strong>Nature Navigator Service Area:</strong> Canmore, Banff, Jasper, Calgary,
+              and more.
+            </div>
           </div>
 
           <div className="h-96 rounded-lg shadow-xl overflow-hidden animate-fade-in-delay-3 group">
