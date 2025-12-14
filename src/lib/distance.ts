@@ -165,9 +165,10 @@ export async function getActualDistance(
   
   console.log('🔄 Fetching distance from Google Distance Matrix API...');
   
-  const apiKey = process.env.GOOGLE_DISTANCE_MATRIX_API_KEY;
+  // Use dedicated Distance Matrix key or fall back to the same key used for Places API
+  const apiKey = process.env.GOOGLE_DISTANCE_MATRIX_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
-    throw new Error('GOOGLE_DISTANCE_MATRIX_API_KEY not configured');
+    throw new Error('Google Maps API key not configured (need GOOGLE_DISTANCE_MATRIX_API_KEY or NEXT_PUBLIC_GOOGLE_MAPS_API_KEY)');
   }
   
   const url = new URL('https://maps.googleapis.com/maps/api/distancematrix/json');
