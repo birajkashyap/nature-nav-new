@@ -105,6 +105,13 @@ export async function POST(req: Request) {
       let distanceData: any = null;
       pricingMethod = "ROUTE_BASED"; // Default fallback
       
+      console.log('🚗 Airport Transfer Pricing:', {
+        hasPickupCoords: !!(pickupLat && pickupLng),
+        hasDropCoords: !!(dropLat && dropLng),
+        pickup: pickup,
+        drop: drop,
+      });
+      
       if (
         pickupLat && pickupLng && dropLat && dropLng &&
         isValidCoordinates({ lat: pickupLat, lng: pickupLng }) &&
@@ -112,12 +119,18 @@ export async function POST(req: Request) {
       ) {
         try {
           console.log('📍 Calculating distance-based pricing...');
+          console.log('Coordinates:', {
+            pickup: { lat: pickupLat, lng: pickupLng },
+            drop: { lat: dropLat, lng: dropLng }
+          });
           
           // Get actual driving distance from Google Distance Matrix API
           distanceData = await getActualDistance(
             { lat: pickupLat, lng: pickupLng },
             { lat: dropLat, lng: dropLng }
           );
+          
+          console.log('Distance data received:', distanceData);
           
           // Calculate price using tiered rates
           const pricing = calculateDistanceBasedPrice(
@@ -132,20 +145,42 @@ export async function POST(req: Request) {
           console.log(`✅ Distance-based pricing: ${distanceData.distanceKm.toFixed(1)} km = $${totalPrice.toFixed(2)}`);
           
         } catch (distanceError: any) {
-          console.error('❌ Distance Matrix failed, falling back to route-based pricing:', distanceError.message);
+          console.error('❌ Distance Matrix failed:', {
+            error: distanceError.message,
+            stack: distanceError.stack,
+          });
+          console.log('Falling back to route-based pricing...');
           // Fall through to route-based pricing below
         }
+      } else {
+        console.log('⚠️ GPS coordinates missing or invalid, using route-based pricing');
+        console.log('Received:', {
+          pickupLat, pickupLng, dropLat, dropLng
+        });
       }
       
       // FALLBACK: Route-based pricing (legacy system)
       if (!distanceData) {
         console.log('📌 Using legacy route-based pricing...');
+        console.log('Attempting to determine route from:', { pickup, drop });
+        
         route = determineRoute(pickup, drop);
         
+        console.log('Route determined:', route || 'NULL');
+        
         if (!route) {
+          console.error('❌ Route determination failed!');
+          console.error('Pickup string:', pickup);
+          console.error('Drop string:', drop);
+          
           return NextResponse.json(
             { 
-              error: "Unable to determine route. Please select locations from the autocomplete dropdown for accurate pricing." 
+              error: "Unable to determine route. Please ensure you selected locations from the autocomplete dropdown. If the issue persists, contact support.",
+              details: {
+                pickup: pickup,
+                drop: drop,
+                hasCoordinates: !!(pickupLat && dropLat),
+              }
             },
             { status: 400 }
           );
@@ -161,6 +196,7 @@ export async function POST(req: Request) {
         }
         
         pricingMethod = "ROUTE_BASED";
+        console.log(`✅ Route-based pricing: ${route} = $${totalPrice.toFixed(2)}`);
       }
       
       depositAmount = calculateDeposit(totalPrice);
