@@ -23,8 +23,18 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { 
+      // Legacy fields (still required for backward compatibility)
       pickup, 
       drop, 
+      // NEW: Structured location data
+      pickupAddress,
+      pickupPlaceId,
+      pickupLat,
+      pickupLng,
+      dropAddress,
+      dropPlaceId,
+      dropLat,
+      dropLng,
       date, 
       car,
       notes = "",
@@ -36,7 +46,7 @@ export async function POST(req: Request) {
       addOns = [],
     } = body;
 
-    if (!pickup || !drop || !date || !car) {
+    if (!pickup && !pickupAddress || !drop && !dropAddress || !date || !car) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -80,13 +90,13 @@ export async function POST(req: Request) {
       const addOnTypes = addOns.map((a: any) => a.addOnType);
       const pricing = calculateWeddingPrice(car, additionalHours, addOnTypes);
       
-      basePrice = pricing.basePrice;
-      hourlyRate = pricing.hourlyRate;
       totalPrice = pricing.total;
       depositAmount = calculateDeposit(totalPrice);
-      
+      basePrice = pricing.basePrice;
+      hourlyRate = pricing.hourlyRate;
+
     } else if (bookingType === "AIRPORT_TRANSFER") {
-      // Airport transfer pricing (existing logic)
+      // Airport transfer pricing (use legacy pickup/drop for route determination)
       route = determineRoute(pickup, drop);
       if (!route) {
         return NextResponse.json(
@@ -113,8 +123,18 @@ export async function POST(req: Request) {
     const booking = await prisma.booking.create({
       data: {
         userId,
+        // Legacy fields (backward compatibility)
         pickup,
         drop,
+        // NEW: Structured location data (if provided)
+        pickupAddress: pickupAddress || pickup,
+        pickupPlaceId: pickupPlaceId || null,
+        pickupLat: pickupLat !== undefined ? pickupLat : null,
+        pickupLng: pickupLng !== undefined ? pickupLng : null,
+        dropAddress: dropAddress || drop,
+        dropPlaceId: dropPlaceId || null,
+        dropLat: dropLat !== undefined ? dropLat : null,
+        dropLng: dropLng !== undefined ? dropLng : null,
         date: bookingDate,
         car,
         notes,

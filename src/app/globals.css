@@ -103,3 +103,34 @@
 [data-radix-select-content] {
   z-index: 9999 !important;
 }
+
+/* --------------------------------------------------- */
+/* GOOGLE PLACES AUTOCOMPLETE                           */
+/* --------------------------------------------------- */
+
+/* Autocomplete dropdown z-index fix */
+.pac-container {
+  z-index: 9999 !important;
+  font-family: inherit;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.pac-item {
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: background-color 0.15s ease;
+}
+
+.pac-item:hover {
+  background-color: #f3f4f6;
+}
+
+.pac-item-query {
+  font-weight: 500;
+  color: #171717;
+}
+
+.pac-icon {
+  margin-top: 4px;
+}

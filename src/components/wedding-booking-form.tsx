@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { calculateWeddingPrice, WEDDING_SHUTTLE } from "@/lib/pricing";
 import { Card } from "@/components/ui/card";
+import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
+import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 
 const VEHICLE_OPTIONS = [
   { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 },
@@ -20,6 +22,7 @@ const VEHICLE_OPTIONS = [
 export function WeddingBookingForm() {
   const { data: session } = useSession();
   const router = useRouter();
+  const { isLoaded: mapsLoaded } = useGoogleMaps();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   
@@ -28,6 +31,12 @@ export function WeddingBookingForm() {
   const [eventStartTime, setEventStartTime] = useState("22:00"); // 10:00 PM
   const [eventEndTime, setEventEndTime] = useState("02:00");     // 2:00 AM
   const [venueAddress, setVenueAddress] = useState("");
+  
+  // NEW: Google Places data for venue
+  const [venuePlaceId, setVenuePlaceId] = useState("");
+  const [venueLat, setVenueLat] = useState<number | null>(null);
+  const [venueLng, setVenueLng] = useState<number | null>(null);
+  
   const [guestCount, setGuestCount] = useState(1);
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [additionalHours, setAdditionalHours] = useState(0);
@@ -93,8 +102,18 @@ export function WeddingBookingForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bookingType: "WEDDING_SHUTTLE",
+          // Legacy fields (backward compatibility)
           pickup: venueAddress,
           drop: venueAddress,
+          // NEW: Structured location data
+          pickupAddress: venueAddress,
+          pickupPlaceId: venuePlaceId || null,
+          pickupLat: venueLat,
+          pickupLng: venueLng,
+          dropAddress: venueAddress,
+          dropPlaceId: venuePlaceId || null,
+          dropLat: venueLat,
+          dropLng: venueLng,
           date: bookingDate.toISOString(),
           car: selectedVehicle,
           notes,
@@ -176,13 +195,28 @@ export function WeddingBookingForm() {
 
         <div className="space-y-2">
           <Label htmlFor="venueAddress">Venue Address *</Label>
-          <Input
-            id="venueAddress"
-            required
-            value={venueAddress}
-            onChange={(e) => setVenueAddress(e.target.value)}
-            placeholder="Enter wedding venue address"
-          />
+          {mapsLoaded ? (
+            <PlacesAutocomplete
+              value={venueAddress}
+              onChange={setVenueAddress}
+              onPlaceSelect={(place) => {
+                setVenueAddress(place.address);
+                setVenuePlaceId(place.placeId);
+                setVenueLat(place.lat);
+                setVenueLng(place.lng);
+              }}
+              placeholder="Search for wedding venue..."
+              required
+            />
+          ) : (
+            <Input
+              id="venueAddress"
+              required
+              value={venueAddress}
+              onChange={(e) => setVenueAddress(e.target.value)}
+              placeholder="Loading location search..."
+            />
+          )}
         </div>
       </div>
 

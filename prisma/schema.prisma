@@ -57,8 +57,22 @@ model Booking {
   id     String @id @default(cuid())
   userId String
 
+  // Legacy fields (will be deprecated after migration)
   pickup String
   drop   String
+  
+  // NEW: Structured location data for pickup
+  pickupAddress     String?
+  pickupPlaceId     String?
+  pickupLat         Float?
+  pickupLng         Float?
+  
+  // NEW: Structured location data for drop-off
+  dropAddress       String?
+  dropPlaceId       String?
+  dropLat           Float?
+  dropLng           Float?
+  
   date   DateTime
   car    String
   notes  String?
