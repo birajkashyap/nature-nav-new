@@ -98,6 +98,13 @@ model Booking {
   basePrice       Float? // For wedding: $850
   hourlyRate      Float? // SUV: $163/hr, Van: $213/hr
   additionalHours Int?      @default(0)
+  
+  // NEW: Distance-based pricing data
+  calculatedDistance  Float? // Actual distance in km from Distance Matrix API
+  estimatedDuration   Int?   // Drive time in seconds
+  pricingMethod      String? // "DISTANCE_BASED" | "ROUTE_BASED" | "MANUAL"
+  priceTierBreakdown String? // JSON string of tier breakdown for transparency
+
 
   // NEW: Airport-specific fields
   route String? // "YYC-Canmore", "YYC-Banff"

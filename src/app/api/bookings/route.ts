@@ -6,8 +6,10 @@ import {
   determineRoute, 
   calculateAirportTransferPrice, 
   calculateWeddingPrice,
-  calculateDeposit 
+  calculateDeposit,
+  calculateDistanceBasedPrice,
 } from "@/lib/pricing";
+import { getActualDistance, isValidCoordinates } from "@/lib/distance";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -84,6 +86,8 @@ export async function POST(req: Request) {
     let basePrice: number | null = null;
     let hourlyRate: number | null = null;
     let route: string | null = null;
+    let pricingMethod: string | null = null;
+    let tierBreakdownJson: string | null = null;
 
     if (bookingType === "WEDDING_SHUTTLE") {
       // Wedding shuttle pricing
@@ -96,24 +100,74 @@ export async function POST(req: Request) {
       hourlyRate = pricing.hourlyRate;
 
     } else if (bookingType === "AIRPORT_TRANSFER") {
-      // Airport transfer pricing (use legacy pickup/drop for route determination)
-      route = determineRoute(pickup, drop);
-      if (!route) {
-        return NextResponse.json(
-          { error: "Unable to determine route. Please check pickup and drop locations." },
-          { status: 400 }
-        );
+      // DYNAMIC DISTANCE-BASED PRICING
+      // Try to use GPS coordinates for accurate pricing
+      let distanceData: any = null;
+      pricingMethod = "ROUTE_BASED"; // Default fallback
+      
+      if (
+        pickupLat && pickupLng && dropLat && dropLng &&
+        isValidCoordinates({ lat: pickupLat, lng: pickupLng }) &&
+        isValidCoordinates({ lat: dropLat, lng: dropLng })
+      ) {
+        try {
+          console.log('📍 Calculating distance-based pricing...');
+          
+          // Get actual driving distance from Google Distance Matrix API
+          distanceData = await getActualDistance(
+            { lat: pickupLat, lng: pickupLng },
+            { lat: dropLat, lng: dropLng }
+          );
+          
+          // Calculate price using tiered rates
+          const pricing = calculateDistanceBasedPrice(
+            distanceData.distanceKm,
+            car
+          );
+          
+          totalPrice = pricing.finalPrice;
+          pricingMethod = "DISTANCE_BASED";
+          tierBreakdownJson = JSON.stringify(pricing.tierBreakdown);
+          
+          console.log(`✅ Distance-based pricing: ${distanceData.distanceKm.toFixed(1)} km = $${totalPrice.toFixed(2)}`);
+          
+        } catch (distanceError: any) {
+          console.error('❌ Distance Matrix failed, falling back to route-based pricing:', distanceError.message);
+          // Fall through to route-based pricing below
+        }
       }
       
-      totalPrice = calculateAirportTransferPrice(route, car);
-      if (totalPrice === 0) {
-        return NextResponse.json(
-          { error: "Invalid route or vehicle selection." },
-          { status: 400 }
-        );
+      // FALLBACK: Route-based pricing (legacy system)
+      if (!distanceData) {
+        console.log('📌 Using legacy route-based pricing...');
+        route = determineRoute(pickup, drop);
+        
+        if (!route) {
+          return NextResponse.json(
+            { 
+              error: "Unable to determine route. Please select locations from the autocomplete dropdown for accurate pricing." 
+            },
+            { status: 400 }
+          );
+        }
+        
+        totalPrice = calculateAirportTransferPrice(route, car);
+        
+        if (totalPrice === 0) {
+          return NextResponse.json(
+            { error: "Invalid route or vehicle selection." },
+            { status: 400 }
+          );
+        }
+        
+        pricingMethod = "ROUTE_BASED";
       }
       
       depositAmount = calculateDeposit(totalPrice);
+      
+      // Store distance data and pricing method for analytics
+      basePrice = distanceData?.distanceKm || null; // Using basePrice to store distance for airport transfers
+      hourlyRate = distanceData?.durationSeconds || null; // Using hourlyRate to store duration for airport transfers
       
     } else {
       return NextResponse.json({ error: "Invalid booking type" }, { status: 400 });
@@ -152,6 +206,11 @@ export async function POST(req: Request) {
         additionalHours,
         // Airport-specific
         route,
+        // Distance-based pricing data
+        calculatedDistance: basePrice, // Stored in basePrice for airport transfers
+        estimatedDuration: hourlyRate ? Number(hourlyRate) : null, // Stored in hourlyRate for airport transfers
+        pricingMethod,
+        priceTierBreakdown: tierBreakdownJson,
       },
     });
 

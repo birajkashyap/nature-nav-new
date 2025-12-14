@@ -178,3 +178,146 @@ export function formatPrice(amount: number): string {
 export function calculateDeposit(totalPrice: number): number {
   return totalPrice * 0.5;
 }
+
+// ==================== DYNAMIC DISTANCE-BASED PRICING ====================
+
+/**
+ * Distance-based pricing configuration
+ * 
+ * Tiered rates apply cumulatively (like tax brackets):
+ * - First 50 km charged at $6.50/km
+ * - Next 50 km (51-100) charged at $4.80/km
+ * - Next 50 km (101-150) charged at $4.50/km
+ * - Remaining km charged at $4.20/km
+ */
+export const DISTANCE_PRICING = {
+  tiers: [
+    { maxKm: 50, ratePerKm: 6.50 },
+    { maxKm: 100, ratePerKm: 4.80 },
+    { maxKm: 150, ratePerKm: 4.50 },
+    { maxKm: Infinity, ratePerKm: 4.20 },
+  ],
+  vehicleMultipliers: {
+    'Luxury SUV (7 Passengers)': 1.0,
+    'Transit Van (14 Passengers)': 1.32,
+  },
+} as const;
+
+export interface DistancePricingBreakdown {
+  distanceKm: number;
+  basePrice: number;
+  vehicleMultiplier: number;
+  finalPrice: number;
+  tierBreakdown: Array<{
+    fromKm: number;
+    toKm: number;
+    ratePerKm: number;
+    distance: number;
+    cost: number;
+  }>;
+}
+
+/**
+ * Calculate price based on distance using tiered cumulative rates
+ * 
+ * @param distanceKm - Total distance in kilometers
+ * @param vehicle - Vehicle type
+ * @returns Detailed price breakdown
+ * 
+ * @example
+ * // 108 km trip in SUV
+ * calculateDistanceBasedPrice(108, 'Luxury SUV (7 Passengers)')
+ * // Returns:
+ * // {
+ * //   distanceKm: 108,
+ * //   basePrice: 601,
+ * //   vehicleMultiplier: 1.0,
+ * //   finalPrice: 601,
+ * //   tierBreakdown: [
+ * //     { fromKm: 0, toKm: 50, ratePerKm: 6.50, distance: 50, cost: 325 },
+ * //     { fromKm: 50, toKm: 100, ratePerKm: 4.80, distance: 50, cost: 240 },
+ * //     { fromKm: 100, toKm: 108, ratePerKm: 4.50, distance: 8, cost: 36 }
+ * //   ]
+ * // }
+ */
+export function calculateDistanceBasedPrice(
+  distanceKm: number,
+  vehicle: string
+): DistancePricingBreakdown {
+  if (distanceKm <= 0) {
+    throw new Error('Distance must be greater than 0');
+  }
+  
+  if (distanceKm > 500) {
+    throw new Error(`Distance ${distanceKm.toFixed(0)} km exceeds maximum allowed 500 km`);
+  }
+  
+  const tierBreakdown: DistancePricingBreakdown['tierBreakdown'] = [];
+  let remainingDistance = distanceKm;
+  let basePrice = 0;
+  let previousMax = 0;
+  
+  // Calculate price for each tier cumulatively
+  for (const tier of DISTANCE_PRICING.tiers) {
+    if (remainingDistance <= 0) break;
+    
+    const tierStartKm = previousMax;
+    const tierMaxKm = tier.maxKm;
+    const tierCapacity = tierMaxKm - tierStartKm;
+    const distanceInThisTier = Math.min(remainingDistance, tierCapacity);
+    const tierCost = distanceInThisTier * tier.ratePerKm;
+    
+    tierBreakdown.push({
+      fromKm: tierStartKm,
+      toKm: tierStartKm + distanceInThisTier,
+      ratePerKm: tier.ratePerKm,
+      distance: distanceInThisTier,
+      cost: tierCost,
+    });
+    
+    basePrice += tierCost;
+    remainingDistance -= distanceInThisTier;
+    previousMax = tierMaxKm;
+  }
+  
+  // Apply vehicle multiplier
+  const multiplier = DISTANCE_PRICING.vehicleMultipliers[
+    vehicle as keyof typeof DISTANCE_PRICING.vehicleMultipliers
+  ] || 1.0;
+  
+  const finalPrice = basePrice * multiplier;
+  
+  return {
+    distanceKm,
+    basePrice,
+    vehicleMultiplier: multiplier,
+    finalPrice,
+    tierBreakdown,
+  };
+}
+
+/**
+ * Format distance pricing breakdown for display
+ */
+export function formatPricingBreakdown(breakdown: DistancePricingBreakdown): string {
+  const lines = [
+    `Distance: ${breakdown.distanceKm.toFixed(1)} km`,
+    '',
+    'Tier Breakdown:',
+  ];
+  
+  breakdown.tierBreakdown.forEach((tier) => {
+    lines.push(
+      `  ${tier.fromKm}-${tier.toKm.toFixed(0)} km: ` +
+      `${tier.distance.toFixed(1)} km × $${tier.ratePerKm.toFixed(2)}/km = ` +
+      `$${tier.cost.toFixed(2)}`
+    );
+  });
+  
+  lines.push('');
+  lines.push(`Base Price: $${breakdown.basePrice.toFixed(2)}`);
+  lines.push(`Vehicle Multiplier: ${breakdown.vehicleMultiplier}x`);
+  lines.push(`Final Price: $${breakdown.finalPrice.toFixed(2)}`);
+  
+  return lines.join('\n');
+}
