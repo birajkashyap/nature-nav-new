@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { ArrowLeft, Lock, CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-r
 const BG =
   "https://images.unsplash.com/photo-1594537180492-e2152862c93?q=80&w=1974&auto=format&fit=crop";
 
-export default function ResetPasswordConfirmPage() {
+function ResetPasswordConfirmContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -245,5 +245,19 @@ export default function ResetPasswordConfirmPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordConfirmPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-black/30 via-black/40 to-black/60">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-white/20 rounded-full border-t-yellow-300 animate-spin"></div>
+        </div>
+      </div>
+    }>
+      <ResetPasswordConfirmContent />
+    </Suspense>
   );
 }
