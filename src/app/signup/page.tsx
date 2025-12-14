@@ -20,15 +20,39 @@ export default function SignupPage() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Password strength indicators
+  const [passwordStrength, setPasswordStrength] = useState({
+    minLength: false,
+    hasNumber: false,
+    hasSpecial: false,
+  });
 
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 80);
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    setPasswordStrength({
+      minLength: password.length >= 8,
+      hasNumber: /\d/.test(password),
+      hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    });
+  }, [password]);
+
+
   async function handleSignup(e: any) {
     e.preventDefault();
     setError("");
+    
+    // Validate password strength
+    if (!passwordStrength.minLength) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+    
     setLoading(true);
 
     const form = new FormData(e.target);
@@ -77,17 +101,6 @@ export default function SignupPage() {
       {/* Gold aura */}
       <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-yellow-300/20 blur-[120px] rounded-full" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-200/10 blur-[150px] rounded-full" />
-
-      {/* Back button */}
-      <Link href="/" className="absolute top-6 left-6 z-20">
-        <Button
-          variant="ghost"
-          className="text-white/80 hover:text-yellow-300 hover:bg-white/10 px-4 py-2 rounded-full transition-all"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
-        </Button>
-      </Link>
 
       {/* Signup Card */}
       <div
@@ -166,6 +179,8 @@ export default function SignupPage() {
                     type="password"
                     name="password"
                     required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="
                       pl-11 h-12 bg-white/10 text-white placeholder:text-gray-300
@@ -174,6 +189,42 @@ export default function SignupPage() {
                     "
                   />
                 </div>
+                
+                {/* Password Strength Indicators */}
+                {password && (
+                  <div className="space-y-1 mt-2 px-2">
+                    <div className="flex items-center gap-2 text-xs">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          passwordStrength.minLength
+                            ? "bg-green-400"
+                            : "bg-white/30"
+                        }`}
+                      />
+                      <span className="text-white/70">At least 8 characters</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          passwordStrength.hasNumber
+                            ? "bg-green-400"
+                            : "bg-white/30"
+                        }`}
+                      />
+                      <span className="text-white/70">Contains a number</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div
+                        className={`w-2 h-2 rounded-full ${
+                          passwordStrength.hasSpecial
+                            ? "bg-green-400"
+                            : "bg-white/30"
+                        }`}
+                      />
+                      <span className="text-white/70">Contains special character</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Submit */}

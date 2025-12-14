@@ -127,8 +127,12 @@ function ProfileContent() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen pt-32 px-4 flex justify-center">
-        <p className="text-muted-foreground">Loading profile...</p>
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-background">
+        <div className="relative">
+          {/* Spinner */}
+          <div className="w-16 h-16 border-4 border-muted rounded-full border-t-accent animate-spin"></div>
+        </div>
+        <p className="text-muted-foreground mt-6 animate-pulse">Loading your profile...</p>
       </div>
     );
   }

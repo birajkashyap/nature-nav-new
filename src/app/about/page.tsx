@@ -101,7 +101,7 @@ const AboutPage = () => {
         </div>
 
         {/* --- Stats Section --- */}
-        <div className="about-animate mb-20">
+        {/* <div className="about-animate mb-20">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-card shadow-lg p-8 rounded-xl border border-muted/30 dark:border-muted/50">
             {stats.map((stat, index) => (
               <div key={index} className="text-center space-y-2">
@@ -115,7 +115,7 @@ const AboutPage = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* --- History and Mission --- */}
         <div className="grid lg:grid-cols-2 gap-16">

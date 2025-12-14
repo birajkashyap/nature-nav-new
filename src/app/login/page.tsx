@@ -83,17 +83,6 @@ function LoginForm() {
       <div className="absolute -top-10 left-1/3 w-96 h-96 rounded-full bg-yellow-300/20 blur-[120px]" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-yellow-200/10 blur-[160px]" />
 
-      {/* Back button */}
-      <Link href="/" className="absolute top-6 left-6 z-20">
-        <Button
-          variant="ghost"
-          className="text-white/80 hover:text-yellow-300 hover:bg-white/10 px-4 py-2 rounded-full transition-all"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
-        </Button>
-      </Link>
-
       {/* Card */}
       <div
         className={`
@@ -183,7 +172,7 @@ function LoginForm() {
 
               <div className="text-right">
                 <Link
-                  href="#"
+                  href="/reset-password"
                   className="text-xs text-yellow-300 hover:text-yellow-200"
                 >
                   Forgot password?
