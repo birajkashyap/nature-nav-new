@@ -271,7 +271,14 @@ function BookingForm() {
           <SelectTrigger id="passengers">
             <SelectValue placeholder="Select number of passengers" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent
+            className="z-[9999] !bg-background border-2 border-border shadow-2xl !opacity-100"
+            style={{
+              backgroundColor: 'var(--background)',
+              opacity: 1,
+              zIndex: 9999,
+            }}
+          >
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((num) => (
               <SelectItem key={num} value={num.toString()}>
                 {num} {num === 1 ? 'Passenger' : 'Passengers'}
