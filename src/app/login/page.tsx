@@ -69,7 +69,7 @@ function LoginForm() {
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
+      className="min-h-screen w-full flex items-center justify-center p-4 pt-24 relative overflow-hidden"
       style={{
         backgroundImage: `url(${BG})`,
         backgroundSize: "cover",
