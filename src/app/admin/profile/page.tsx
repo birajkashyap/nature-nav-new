@@ -22,7 +22,7 @@ export default async function AdminProfilePage() {
   });
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 p-8">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 p-8 pt-32">
       <div className="max-w-7xl mx-auto space-y-8">
         <header className="flex justify-between items-center border-b border-zinc-800 pb-6">
           <div>
