@@ -226,15 +226,22 @@ export function WeddingBookingForm() {
         
         <div className="space-y-2">
           <Label htmlFor="guestCount">Number of Guests *</Label>
-          <Input
-            id="guestCount"
-            type="number"
-            min="1"
-            max="20"
+          <Select
+            value={guestCount.toString()}
+            onValueChange={(value) => handleGuestCountChange(parseInt(value))}
             required
-            value={guestCount}
-            onChange={(e) => handleGuestCountChange(parseInt(e.target.value) || 1)}
-          />
+          >
+            <SelectTrigger id="guestCount">
+              <SelectValue placeholder="Select number of guests" />
+            </SelectTrigger>
+            <SelectContent>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((num) => (
+                <SelectItem key={num} value={num.toString()}>
+                  {num} {num === 1 ? 'Guest' : 'Guests'}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {selectedVehicle && (
             <p className="text-xs text-accent">✓ Recommended: {selectedVehicle}</p>
           )}
