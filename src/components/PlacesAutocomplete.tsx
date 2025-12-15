@@ -68,7 +68,8 @@ export function PlacesAutocomplete({
         google.maps.event.removeListener(listener);
       }
     };
-  }, [onChange, onPlaceSelect]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // IMPORTANT: Empty deps - Autocomplete must be created only ONCE
 
   return (
     <Input
