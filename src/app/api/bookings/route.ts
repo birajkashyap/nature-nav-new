@@ -40,6 +40,8 @@ export async function POST(req: Request) {
       date, 
       car,
       notes = "",
+      passengers = 1, // Number of passengers (for vehicle selection)
+      luggageCount = 0, // NEW: Luggage count
       bookingType = "AIRPORT_TRANSFER",
       // Wedding-specific fields
       eventStartTime,
@@ -242,6 +244,8 @@ export async function POST(req: Request) {
         additionalHours,
         // Airport-specific
         route,
+        luggageCount,
+        passengerCount: passengers, // Store passenger count
         // Distance-based pricing data
         calculatedDistance: basePrice, // Stored in basePrice for airport transfers
         estimatedDuration: hourlyRate ? Number(hourlyRate) : null, // Stored in hourlyRate for airport transfers

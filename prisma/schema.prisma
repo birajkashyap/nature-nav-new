@@ -104,10 +104,13 @@ model Booking {
   estimatedDuration   Int?   // Drive time in seconds
   pricingMethod      String? // "DISTANCE_BASED" | "ROUTE_BASED" | "MANUAL"
   priceTierBreakdown String? // JSON string of tier breakdown for transparency
+  passengerCount Int?    @default(1) // Number of passengers
 
 
   // NEW: Airport-specific fields
-  route String? // "YYC-Canmore", "YYC-Banff"
+  route        String? // "YYC-Canmore", "YYC-Banff"
+  luggageCount Int?    @default(0) // Number of luggage items
+
 
   // Relations
   user   User           @relation(fields: [userId], references: [id])

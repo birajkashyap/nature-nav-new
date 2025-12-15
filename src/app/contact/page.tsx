@@ -131,6 +131,8 @@ function BookingForm() {
           date: bookingDate.toISOString(),
           car,
           notes,
+          passengers, // Passenger count
+          luggageCount, // NEW: Luggage count
         }),
       });
 
