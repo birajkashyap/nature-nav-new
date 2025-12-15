@@ -112,6 +112,27 @@ function BookingForm() {
 
     try {
       // 1. Create Booking & Get Price
+      console.log('📍 Booking Submission - Location Data:', {
+        pickup: {
+          address: pickup,
+          placeId: pickupPlaceId || 'MISSING',
+          hasCoords: !!(pickupLat && pickupLng),
+          coords: pickupLat && pickupLng ? `${pickupLat}, ${pickupLng}` : 'NULL'
+        },
+        drop: {
+          address: drop,
+          placeId: dropPlaceId || 'MISSING',
+          hasCoords: !!(dropLat && dropLng),
+          coords: dropLat && dropLng ? `${dropLat}, ${dropLng}` : 'NULL'
+        },
+        passengers,
+        luggageCount
+      });
+
+      if (!pickupLat || !pickupLng || !dropLat || !dropLng) {
+        console.warn('⚠️ WARNING: GPS coordinates missing! User may have typed manually without selecting from dropdown.');
+      }
+
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -205,7 +226,7 @@ function BookingForm() {
               value={pickup}
               onChange={setPickup}
               onPlaceSelect={(place) => {
-                setPickup(place.address);
+                // Don't call setPickup here - it's already called by onChange in PlacesAutocomplete
                 setPickupPlaceId(place.placeId);
                 setPickupLat(place.lat);
                 setPickupLng(place.lng);
@@ -229,7 +250,7 @@ function BookingForm() {
               value={drop}
               onChange={setDrop}
               onPlaceSelect={(place) => {
-                setDrop(place.address);
+                // Don't call setDrop here - it's already called by onChange in PlacesAutocomplete
                 setDropPlaceId(place.placeId);
                 setDropLat(place.lat);
                 setDropLng(place.lng);
