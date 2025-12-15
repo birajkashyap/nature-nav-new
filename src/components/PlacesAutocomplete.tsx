@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 
-interface PlaceResult {
+export interface PlaceResult {
   address: string;
   placeId: string;
   lat: number;
@@ -31,6 +31,15 @@ export function PlacesAutocomplete({
 }: PlacesAutocompleteProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [internalValue, setInternalValue] = useState(value);
+  const [hasSelectedPlace, setHasSelectedPlace] = useState(false);
+
+  // Sync internal value with prop value only if not actively selecting
+  useEffect(() => {
+    if (!hasSelectedPlace) {
+      setInternalValue(value);
+    }
+  }, [value, hasSelectedPlace]);
 
   useEffect(() => {
     if (!inputRef.current || !window.google) return;
@@ -48,6 +57,7 @@ export function PlacesAutocomplete({
 
       if (!place || !place.geometry) {
         console.warn('No place details available');
+        setHasSelectedPlace(false);
         return;
       }
 
@@ -58,6 +68,9 @@ export function PlacesAutocomplete({
         lng: place.geometry.location!.lng(),
       };
 
+      setHasSelectedPlace(true);
+      setInternalValue(placeResult.address);
+      onChange(placeResult.address);
       onPlaceSelect(placeResult);
     });
 
@@ -66,14 +79,21 @@ export function PlacesAutocomplete({
         google.maps.event.removeListener(listener);
       }
     };
-  }, [onPlaceSelect]);
+  }, [onChange, onPlaceSelect]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setInternalValue(newValue);
+    setHasSelectedPlace(false);
+    onChange(newValue);
+  };
 
   return (
     <Input
       ref={inputRef}
       type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
+      value={internalValue}
+      onChange={handleInputChange}
       placeholder={placeholder}
       className={className}
       name={name}
