@@ -73,6 +73,8 @@ function BookingForm() {
   const [dropPlaceId, setDropPlaceId] = useState("");
   const [dropLat, setDropLat] = useState<number | null>(null);
   const [dropLng, setDropLng] = useState<number | null>(null);
+  
+  const [luggageCount, setLuggageCount] = useState<number>(0);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -255,42 +257,78 @@ function BookingForm() {
         </div>
       </div>
 
-      {/* Passenger Count - NEW */}
-      <div className="space-y-2">
-        <Label htmlFor="passengers">Number of Passengers *</Label>
-        <Select
-          value={passengers.toString()}
-          onValueChange={(value) => {
-            const count = parseInt(value);
-            setPassengers(count);
-            const recommended = getRecommendedVehicle(count);
-            setSelectedVehicle(recommended);
-          }}
-          required
-        >
-          <SelectTrigger id="passengers">
-            <SelectValue placeholder="Select number of passengers" />
-          </SelectTrigger>
-          <SelectContent
-            className="z-[9999] !bg-background border-2 border-border shadow-2xl !opacity-100"
-            style={{
-              backgroundColor: 'var(--background)',
-              opacity: 1,
-              zIndex: 9999,
-            }}
-          >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((num) => (
-              <SelectItem key={num} value={num.toString()}>
-                {num} {num === 1 ? 'Passenger' : 'Passengers'}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {passengers > 0 && selectedVehicle && (
-          <p className="text-xs text-accent font-medium">
-            ✓ Recommended: {selectedVehicle}
-          </p>
-        )}
+      {/* Passenger and Luggage Count */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* Passenger Count */}
+        <div className="space-y-2">
+          <Label>Number of Passengers *</Label>
+          <div className="flex items-center border border-border rounded-md overflow-hidden">
+            <div className="flex items-center justify-center w-12 h-10 bg-muted">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+              </svg>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const newCount = Math.max(1, passengers - 1);
+                setPassengers(newCount);
+                setSelectedVehicle(getRecommendedVehicle(newCount));
+              }}
+              className="flex items-center justify-center w-12 h-10 hover:bg-muted transition-colors"
+            >
+              <span className="text-xl font-semibold">−</span>
+            </button>
+            <div className="flex-1 flex items-center justify-center h-10 text-center font-medium">
+              {passengers}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const newCount = Math.min(20, passengers + 1);
+                setPassengers(newCount);
+                setSelectedVehicle(getRecommendedVehicle(newCount));
+              }}
+              className="flex items-center justify-center w-12 h-10 hover:bg-muted transition-colors"
+            >
+              <span className="text-xl font-semibold">+</span>
+            </button>
+          </div>
+          {selectedVehicle && (
+            <p className="text-xs text-accent font-medium">
+              ✓ Recommended: {selectedVehicle}
+            </p>
+          )}
+        </div>
+
+        {/* Luggage Count */}
+        <div className="space-y-2">
+          <Label>Luggage Count</Label>
+          <div className="flex items-center border border-border rounded-md overflow-hidden">
+            <div className="flex items-center justify-center w-12 h-10 bg-muted">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732l-3.354 1.935-1.18 4.455a1 1 0 01-1.933 0L9.854 12.8 6.5 10.866a1 1 0 010-1.732l3.354-1.935 1.18-4.455A1 1 0 0112 2z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLuggageCount(Math.max(0, luggageCount - 1))}
+              className="flex items-center justify-center w-12 h-10 hover:bg-muted transition-colors"
+            >
+              <span className="text-xl font-semibold">−</span>
+            </button>
+            <div className="flex-1 flex items-center justify-center h-10 text-center font-medium">
+              {luggageCount}
+            </div>
+            <button
+              type="button"
+              onClick={() => setLuggageCount(Math.min(20, luggageCount + 1))}
+              className="flex items-center justify-center w-12 h-10 hover:bg-muted transition-colors"
+            >
+              <span className="text-xl font-semibold">+</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Vehicle Selection - Auto-populated based on passengers */}
