@@ -147,27 +147,15 @@ export function CeremonyBookingForm() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="startTime">Start Time *</Label>
-            <Input
-              id="startTime"
-              type="time"
-              required
-              value={eventStartTime}
-              onChange={(e) => setEventStartTime(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endTime">End Time *</Label>
-            <Input
-              id="endTime"
-              type="time"
-              required
-              value={eventEndTime}
-              onChange={(e) => setEventEndTime(e.target.value)}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="startTime">Start Time *</Label>
+          <Input
+            id="startTime"
+            type="time"
+            required
+            value={eventStartTime}
+            onChange={(e) => setEventStartTime(e.target.value)}
+          />
         </div>
 
         <div className="space-y-2">
