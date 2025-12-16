@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { sendBookingConfirmationEmail } from "@/lib/email";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-11-17.clover",
@@ -75,6 +76,34 @@ export async function POST(req: Request) {
               } as any,
             });
             console.log("Booking APPROVED (Deposit Paid):", bookingId);
+
+            // Send confirmation email to user
+            try {
+              const user = await prisma.user.findUnique({
+                where: { id: existingBooking.userId },
+                select: { email: true, name: true }
+              });
+
+              if (user?.email) {
+                await sendBookingConfirmationEmail(
+                  user.email,
+                  user.name || 'Valued Customer',
+                  {
+                    id: existingBooking.id,
+                    car: existingBooking.car,
+                    pickup: existingBooking.pickup,
+                    drop: existingBooking.drop,
+                    date: existingBooking.date,
+                    totalPrice: existingBooking.totalPrice || 0,
+                    depositAmount: existingBooking.depositAmount || 0,
+                  }
+                );
+                console.log("📧 Confirmation email sent to:", user.email);
+              }
+            } catch (emailError) {
+              console.error("Failed to send confirmation email:", emailError);
+              // Don't fail the webhook if email fails
+            }
         }
         console.log("Booking updated successfully:", bookingId);
       } catch (err) {
