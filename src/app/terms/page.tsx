@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
@@ -8,10 +9,20 @@ export default function TermsAndConditionsPage() {
     <main className="min-h-screen pt-32 pb-24 px-4 bg-background font-body">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-luxury mb-4 text-foreground/95">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/logo.png"
+              alt="Nature Navigator Logo"
+              width={80}
+              height={80}
+              className="rounded-full"
+            />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-luxury mb-4 text-accent">
             Terms & Conditions
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-accent font-medium">
             Nature Navigator Shuttle Services Ltd.
           </p>
         </div>
