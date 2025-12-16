@@ -9,8 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { calculateWeddingPrice, WEDDING_SHUTTLE } from "@/lib/pricing";
+import { calculateEngagementPrice, ENGAGEMENT_SERVICE } from "@/lib/pricing";
 import { Card } from "@/components/ui/card";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
@@ -20,7 +19,7 @@ const VEHICLE_OPTIONS = [
   { name: "Transit Van (14 Passengers)", minPassengers: 1, maxPassengers: 14 },
 ];
 
-export function WeddingBookingForm() {
+export function EngagementBookingForm() {
   const { data: session } = useSession();
   const router = useRouter();
   const { isLoaded: mapsLoaded } = useGoogleMaps();
@@ -29,11 +28,11 @@ export function WeddingBookingForm() {
   
   // Form state
   const [eventDate, setEventDate] = useState("");
-  const [eventStartTime, setEventStartTime] = useState("22:00"); // 10:00 PM
-  const [eventEndTime, setEventEndTime] = useState("02:00");     // 2:00 AM
+  const [eventStartTime, setEventStartTime] = useState("14:00"); // 2:00 PM
+  const [eventEndTime, setEventEndTime] = useState("17:00");     // 5:00 PM
   const [venueAddress, setVenueAddress] = useState("");
   
-  // NEW: Google Places data for venue
+  // Google Places data for venue
   const [venuePlaceId, setVenuePlaceId] = useState("");
   const [venueLat, setVenueLat] = useState<number | null>(null);
   const [venueLng, setVenueLng] = useState<number | null>(null);
@@ -41,34 +40,22 @@ export function WeddingBookingForm() {
   const [guestCount, setGuestCount] = useState(1);
   const [luggageCount, setLuggageCount] = useState(0);
   const [selectedVehicle, setSelectedVehicle] = useState("");
-  const [additionalHours, setAdditionalHours] = useState(0);
-  const [addOns, setAddOns] = useState<string[]>([]);
-  const [ceremonyTime, setCeremonyTime] = useState("");
-  const [pickupLocations, setPickupLocations] = useState("");
+  const [hours, setHours] = useState(3); // Min 3 hours
   const [notes, setNotes] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState<boolean>(false);
 
   // Auto-select vehicle based on guest count
-  function handleGuestCountChange(count: number) {
-    setGuestCount(count);
-    const recommended = VEHICLE_OPTIONS.find(
-      (v) => count >= v.minPassengers && count <= v.maxPassengers
-    );
-    if (recommended) {
-      setSelectedVehicle(recommended.name);
+  useEffect(() => {
+    if (guestCount <= 7) {
+      setSelectedVehicle("Luxury SUV (7 Passengers)");
+    } else {
+      setSelectedVehicle("Transit Van (14 Passengers)");
     }
-  }
-
-  // Toggle add-on
-  function toggleAddOn(addOn: string) {
-    setAddOns((prev) =>
-      prev.includes(addOn) ? prev.filter((a) => a !== addOn) : [...prev, addOn]
-    );
-  }
+  }, [guestCount]);
 
   // Calculate pricing
   const pricing = selectedVehicle
-    ? calculateWeddingPrice(selectedVehicle, additionalHours, addOns)
+    ? calculateEngagementPrice(selectedVehicle, hours)
     : null;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -76,26 +63,22 @@ export function WeddingBookingForm() {
     setLoading(true);
     setError("");
 
-    // Check if user is logged in
     if (!session) {
       router.push("/login?callbackUrl=/contact");
       setLoading(false);
       return;
     }
 
-    if (!eventDate || !eventStartTime || !eventEndTime) {
+    if (!eventDate || !eventStartTime) {
       setError("Please fill in all required event details");
       setLoading(false);
       return;
     }
 
     try {
-      // Create booking date from event date and start time
       const bookingDate = new Date(`${eventDate}T${eventStartTime}`);
       let eventEnd = new Date(`${eventDate}T${eventEndTime}`);
       
-      // If end time is earlier than start time, the event crosses midnight
-      // Add one day to the end date
       if (eventEnd <= bookingDate) {
         eventEnd = new Date(eventEnd.getTime() + 24 * 60 * 60 * 1000);
       }
@@ -104,11 +87,9 @@ export function WeddingBookingForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          bookingType: "WEDDING_SHUTTLE",
-          // Legacy fields (backward compatibility)
+          bookingType: "ENGAGEMENT",
           pickup: venueAddress,
           drop: venueAddress,
-          // NEW: Structured location data
           pickupAddress: venueAddress,
           pickupPlaceId: venuePlaceId || null,
           pickupLat: venueLat,
@@ -120,17 +101,10 @@ export function WeddingBookingForm() {
           date: bookingDate.toISOString(),
           car: selectedVehicle,
           notes,
+          passengers: guestCount,
           eventStartTime: bookingDate.toISOString(),
           eventEndTime: eventEnd.toISOString(),
-          additionalHours,
-          addOns: addOns.map((addOnType) => ({
-            addOnType,
-            serviceName: addOnType === "CEREMONY_PICKUP_DROPOFF" ? "Ceremony Guest Pickup/Drop-off" : addOnType,
-            price: addOnType === "CEREMONY_PICKUP_DROPOFF" ? 750 : 0,
-            duration: addOnType === "CEREMONY_PICKUP_DROPOFF" ? 3 : null,
-            pickupLocation: pickupLocations || null,
-            notes: ceremonyTime ? `Ceremony time: ${ceremonyTime}` : null,
-          })),
+          additionalHours: hours - ENGAGEMENT_SERVICE.minHours,
         }),
       });
 
@@ -140,7 +114,6 @@ export function WeddingBookingForm() {
         throw new Error(data.error || "Booking failed");
       }
 
-      // Redirect to Stripe checkout
       if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl;
       }
@@ -160,7 +133,7 @@ export function WeddingBookingForm() {
 
       {/* Event Details */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-accent">Event Details</h3>
+        <h3 className="text-lg font-semibold text-accent">Engagement Details</h3>
         
         <div className="space-y-2">
           <Label htmlFor="eventDate">Event Date *</Label>
@@ -170,14 +143,15 @@ export function WeddingBookingForm() {
             required
             value={eventDate}
             onChange={(e) => setEventDate(e.target.value)}
+            min={new Date().toISOString().split('T')[0]}
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="eventStartTime">Start Time (Default: 10:00 PM) *</Label>
+            <Label htmlFor="startTime">Start Time *</Label>
             <Input
-              id="eventStartTime"
+              id="startTime"
               type="time"
               required
               value={eventStartTime}
@@ -185,9 +159,9 @@ export function WeddingBookingForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="eventEndTime">End Time (Default: 2:00 AM) *</Label>
+            <Label htmlFor="endTime">End Time *</Label>
             <Input
-              id="eventEndTime"
+              id="endTime"
               type="time"
               required
               value={eventEndTime}
@@ -197,7 +171,7 @@ export function WeddingBookingForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="venueAddress">Venue Address *</Label>
+          <Label htmlFor="venue">Venue Address *</Label>
           {mapsLoaded ? (
             <PlacesAutocomplete
               value={venueAddress}
@@ -208,16 +182,15 @@ export function WeddingBookingForm() {
                 setVenueLat(place.lat);
                 setVenueLng(place.lng);
               }}
-              placeholder="Search for wedding venue..."
+              placeholder="Enter venue address"
               required
             />
           ) : (
             <Input
-              id="venueAddress"
-              required
               value={venueAddress}
               onChange={(e) => setVenueAddress(e.target.value)}
-              placeholder="Loading location search..."
+              placeholder="Enter venue address"
+              required
             />
           )}
         </div>
@@ -239,7 +212,7 @@ export function WeddingBookingForm() {
               </div>
               <button
                 type="button"
-                onClick={() => handleGuestCountChange(Math.max(1, guestCount - 1))}
+                onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
                 className="flex items-center justify-center w-12 h-10 hover:bg-muted transition-colors"
               >
                 <span className="text-xl font-semibold">−</span>
@@ -249,7 +222,7 @@ export function WeddingBookingForm() {
               </div>
               <button
                 type="button"
-                onClick={() => handleGuestCountChange(Math.min(20, guestCount + 1))}
+                onClick={() => setGuestCount(Math.min(14, guestCount + 1))}
                 className="flex items-center justify-center w-12 h-10 hover:bg-muted transition-colors"
               >
                 <span className="text-xl font-semibold">+</span>
@@ -288,8 +261,8 @@ export function WeddingBookingForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="vehicle">Selected Vehicle *</Label>
-          <Select value={selectedVehicle} onValueChange={setSelectedVehicle} required>
+          <Label>Vehicle (Auto-selected based on guests)</Label>
+          <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
             <SelectTrigger>
               <SelectValue placeholder="Select vehicle" />
             </SelectTrigger>
@@ -315,76 +288,35 @@ export function WeddingBookingForm() {
         </div>
       </div>
 
-      {/* Service Duration */}
+      {/* Duration */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-accent">Service Duration</h3>
-        <p className="text-sm text-muted-foreground">
-          Base service includes 4 hours. Add extended hours if needed.
-        </p>
-        
+        <h3 className="text-lg font-semibold text-accent">Duration</h3>
         <div className="space-y-2">
-          <Label htmlFor="additionalHours">Additional Hours (0-4)</Label>
-          <Input
-            id="additionalHours"
-            type="number"
-            min="0"
-            max="4"
-            value={additionalHours}
-            onChange={(e) => setAdditionalHours(parseInt(e.target.value) || 0)}
-          />
-          {selectedVehicle && additionalHours > 0 && (
-            <p className="text-xs text-muted-foreground">
-              Rate: ${WEDDING_SHUTTLE.hourlyRates[selectedVehicle as keyof typeof WEDDING_SHUTTLE.hourlyRates]}/hour
-            </p>
-          )}
+          <Label>Service Hours (Minimum 3 hours)</Label>
+          <div className="flex items-center gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setHours(Math.max(ENGAGEMENT_SERVICE.minHours, hours - 1))}
+            >
+              -
+            </Button>
+            <span className="text-2xl font-bold w-12 text-center">{hours}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setHours(hours + 1)}
+            >
+              +
+            </Button>
+            <span className="text-sm text-muted-foreground">hours</span>
+          </div>
         </div>
       </div>
 
-      {/* Add-On Services */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-accent">Add-On Services</h3>
-        
-        <div className="flex items-start space-x-3">
-          <Checkbox
-            id="ceremonyPickup"
-            checked={addOns.includes("CEREMONY_PICKUP_DROPOFF")}
-            onCheckedChange={() => toggleAddOn("CEREMONY_PICKUP_DROPOFF")}
-          />
-          <div className="space-y-1">
-            <Label htmlFor="ceremonyPickup" className="cursor-pointer">
-              Ceremony Guest Pickup/Drop-off ($750)
-            </Label>
-            <p className="text-xs text-muted-foreground">
-              1-3 hours before ceremony - transfers from hotels/Airbnbs to venue
-            </p>
-          </div>
-        </div>
-
-        {addOns.includes("CEREMONY_PICKUP_DROPOFF") && (
-          <div className="ml-8 space-y-4 border-l-2 border-accent/20 pl-4">
-            <div className="space-y-2">
-              <Label htmlFor="ceremonyTime">Ceremony Time</Label>
-              <Input
-                id="ceremonyTime"
-                type="time"
-                value={ceremonyTime}
-                onChange={(e) => setCeremonyTime(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pickupLocations">Pickup Locations</Label>
-              <Textarea
-                id="pickupLocations"
-                value={pickupLocations}
-                onChange={(e) => setPickupLocations(e.target.value)}
-                placeholder="List hotels/Airbnbs for guest pickup..."
-              />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Additional Notes */}
+      {/* Notes */}
       <div className="space-y-2">
         <Label htmlFor="notes">Additional Notes</Label>
         <Textarea
@@ -401,21 +333,13 @@ export function WeddingBookingForm() {
           <h3 className="text-lg font-semibold mb-4">Price Summary</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>Base Wedding Shuttle (4 hours)</span>
-              <span>${pricing.basePrice.toFixed(2)}</span>
+              <span>Service Hours</span>
+              <span>{pricing.hoursBooked} hours</span>
             </div>
-            {additionalHours > 0 && (
-              <div className="flex justify-between">
-                <span>Additional {additionalHours} hour(s) @ ${pricing.hourlyRate}/hr</span>
-                <span>${pricing.additionalHoursCost.toFixed(2)}</span>
-              </div>
-            )}
-            {pricing.ceremonyPickupCost > 0 && (
-              <div className="flex justify-between">
-                <span>Ceremony Pickup/Drop-off</span>
-                <span>${pricing.ceremonyPickupCost.toFixed(2)}</span>
-              </div>
-            )}
+            <div className="flex justify-between">
+              <span>Rate: ${pricing.hourlyRate}/hour</span>
+              <span></span>
+            </div>
             <div className="border-t border-accent/20 pt-2 mt-2"></div>
             <div className="flex justify-between">
               <span>Subtotal</span>
@@ -438,16 +362,16 @@ export function WeddingBookingForm() {
         </Card>
       )}
 
-      {/* Terms & Conditions Agreement */}
+      {/* Terms & Conditions */}
       <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30 border border-border">
         <input
           type="checkbox"
-          id="wedding-terms-agreement"
+          id="terms-agreement"
           checked={agreedToTerms}
           onChange={(e) => setAgreedToTerms(e.target.checked)}
           className="mt-1 h-4 w-4 rounded border-border accent-accent cursor-pointer"
         />
-        <label htmlFor="wedding-terms-agreement" className="text-sm text-foreground/80 cursor-pointer">
+        <label htmlFor="terms-agreement" className="text-sm text-foreground/80 cursor-pointer">
           I have read and agree to the{" "}
           <Link 
             href="/terms" 
@@ -462,12 +386,18 @@ export function WeddingBookingForm() {
 
       <Button
         type="submit"
-        disabled={loading || !selectedVehicle || !agreedToTerms}
+        disabled={loading || !agreedToTerms}
         size="lg"
         className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? "Processing..." : `Proceed to Payment (30% Deposit)`}
       </Button>
+
+      {!session && (
+        <p className="text-xs text-center text-muted-foreground">
+          You will be asked to sign in before booking.
+        </p>
+      )}
     </form>
   );
 }

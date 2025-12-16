@@ -30,6 +30,8 @@ import {
   SelectPortal,
 } from "@/components/ui/select";
 import { WeddingBookingForm } from "@/components/wedding-booking-form";
+import { EngagementBookingForm } from "@/components/engagement-booking-form";
+import { CeremonyBookingForm } from "@/components/ceremony-booking-form";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 
@@ -640,7 +642,7 @@ GSAPAccordionContent.displayName = "GSAPAccordionContent";
 
 const ContactPage = () => {
   const mainRef = useRef<HTMLDivElement>(null);
-  const [bookingType, setBookingType] = useState<'airport' | 'wedding'>('airport');
+  const [bookingType, setBookingType] = useState<'airport' | 'wedding' | 'engagement' | 'ceremony'>('airport');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -692,7 +694,7 @@ const ContactPage = () => {
             </Label>
             <Select 
               value={bookingType} 
-              onValueChange={(value: 'airport' | 'wedding') => setBookingType(value)}
+              onValueChange={(value: 'airport' | 'wedding' | 'engagement' | 'ceremony') => setBookingType(value)}
             >
               <SelectTrigger className="h-12">
                 <SelectValue />
@@ -721,6 +723,18 @@ const ContactPage = () => {
                     <span className="text-xs text-muted-foreground">4-hour service from $850</span>
                   </div>
                 </SelectItem>
+                <SelectItem value="engagement">
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Engagement Service</span>
+                    <span className="text-xs text-muted-foreground">3-hour service from $450</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="ceremony">
+                  <div className="flex flex-col">
+                    <span className="font-semibold">Ceremony (Hotel Vista)</span>
+                    <span className="text-xs text-muted-foreground">2-hour service from $350</span>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -728,14 +742,16 @@ const ContactPage = () => {
           {/* Conditional Form Rendering */}
           <div className="space-y-6 contact-animate">
             <h2 className="text-4xl font-luxury text-accent">
-              {bookingType === 'airport' ? 'Airport Transfer Details' : 'Wedding Shuttle Booking'}
+              {bookingType === 'airport' && 'Airport Transfer Details'}
+              {bookingType === 'wedding' && 'Wedding Shuttle Booking'}
+              {bookingType === 'engagement' && 'Engagement Service Booking'}
+              {bookingType === 'ceremony' && 'Ceremony (Hotel Vista) Booking'}
             </h2>
             
-            {bookingType === 'airport' ? (
-              <BookingForm />
-            ) : (
-              <WeddingBookingForm />
-            )}
+            {bookingType === 'airport' && <BookingForm />}
+            {bookingType === 'wedding' && <WeddingBookingForm />}
+            {bookingType === 'engagement' && <EngagementBookingForm />}
+            {bookingType === 'ceremony' && <CeremonyBookingForm />}
           </div>
 
           <div className="space-y-8 contact-animate">
