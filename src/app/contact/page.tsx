@@ -32,6 +32,8 @@ import {
 import { WeddingBookingForm } from "@/components/wedding-booking-form";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
+import { estimateRoadDistance } from "@/lib/distance";
+import { calculateDistanceBasedPrice, calculateDeposit } from "@/lib/pricing";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -76,6 +78,38 @@ function BookingForm() {
   
   const [luggageCount, setLuggageCount] = useState<number>(0);
   const [agreedToTerms, setAgreedToTerms] = useState<boolean>(false);
+  
+  // Price estimate state
+  const [priceEstimate, setPriceEstimate] = useState<{
+    distanceKm: number;
+    totalPrice: number;
+    depositAmount: number;
+  } | null>(null);
+
+  // Calculate price estimate when locations/vehicle change
+  useEffect(() => {
+    if (pickupLat && pickupLng && dropLat && dropLng && selectedVehicle) {
+      try {
+        const distance = estimateRoadDistance(
+          { lat: pickupLat, lng: pickupLng },
+          { lat: dropLat, lng: dropLng }
+        );
+        const pricing = calculateDistanceBasedPrice(distance, selectedVehicle);
+        const deposit = calculateDeposit(pricing.finalPrice);
+        
+        setPriceEstimate({
+          distanceKm: distance,
+          totalPrice: pricing.finalPrice,
+          depositAmount: deposit,
+        });
+      } catch (error) {
+        console.error('Price calculation error:', error);
+        setPriceEstimate(null);
+      }
+    } else {
+      setPriceEstimate(null);
+    }
+  }, [pickupLat, pickupLng, dropLat, dropLng, selectedVehicle]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -166,23 +200,7 @@ function BookingForm() {
 
       const { booking, priceDetails } = data;
 
-      // 2. Confirm Price with User (Simple Alert for MVP, better UI recommended)
-      const confirmed = confirm(
-        `Trip Details:\n` +
-        `Distance: ~${priceDetails.distanceKm} km\n` +
-        `Total Price: $${priceDetails.totalPrice}\n` +
-        `Required Deposit (30%): $${priceDetails.depositAmount}\n\n` +
-        `Proceed to payment?`
-      );
-
-      if (!confirmed) {
-        // Ideally we should cancel the booking here if they say no,
-        // but for now we just stop the payment flow. The booking stays "Pending"
-        // and they can cancel it from profile or it expires.
-        setLoading(false);
-        return;
-      }
-
+      // Price already shown on form - proceed directly to payment
       // 3. Initiate Payment (No amount passed, server uses DB)
       const paymentRes = await fetch("/api/payment/create-checkout-session", {
         method: "POST",
@@ -397,6 +415,44 @@ function BookingForm() {
           placeholder="Flight number, child seat request, etc."
         />
       </div>
+
+      {/* Price Estimate Card */}
+      {priceEstimate && (
+        <Card className="bg-card/50 border-accent/30 overflow-hidden">
+          <div className="p-5 space-y-4">
+            <div className="flex items-center gap-2 text-accent">
+              <MapPin className="h-5 w-5" />
+              <h3 className="font-semibold text-lg">Price Estimate</h3>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex justify-between items-center pb-2 border-b border-border">
+                <span className="text-muted-foreground">Estimated Distance</span>
+                <span className="font-medium">~{priceEstimate.distanceKm.toFixed(0)} km</span>
+              </div>
+              
+              <div className="flex justify-between items-center pb-2 border-b border-border">
+                <span className="text-muted-foreground">Total Price</span>
+                <span className="font-semibold text-lg">C${priceEstimate.totalPrice.toFixed(2)}</span>
+              </div>
+              
+              <div className="flex justify-between items-center text-green-500 font-medium">
+                <span>✓ Deposit Now (30%)</span>
+                <span>C${priceEstimate.depositAmount.toFixed(2)}</span>
+              </div>
+              
+              <div className="flex justify-between items-center text-accent font-medium">
+                <span>Remaining Balance (70%)</span>
+                <span>C${(priceEstimate.totalPrice - priceEstimate.depositAmount).toFixed(2)}</span>
+              </div>
+            </div>
+            
+            <p className="text-xs text-muted-foreground pt-2 border-t border-border">
+              * Final price based on exact route. Estimate uses straight-line distance.
+            </p>
+          </div>
+        </Card>
+      )}
 
       {/* Terms & Conditions Agreement */}
       <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30 border border-border">
