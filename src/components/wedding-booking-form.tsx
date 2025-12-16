@@ -425,7 +425,7 @@ export function WeddingBookingForm() {
           >
             Terms & Conditions
           </Link>
-          , including the 30% non-refundable deposit and cancellation policy.
+          , including the 35% non-refundable deposit and cancellation policy.
         </label>
       </div>
 

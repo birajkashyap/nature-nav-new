@@ -49,7 +49,7 @@ export default function TermsAndConditionsPage() {
             <section>
               <CardTitle className="text-xl font-luxury mb-3">Deposit & Payment Policy (Weddings Only)</CardTitle>
               <ul className="list-disc list-inside space-y-2 text-foreground/80">
-                <li>A 30% non-refundable deposit is required at the time of booking to secure the reservation.</li>
+                <li>A 35% non-refundable deposit is required at the time of booking to secure the reservation.</li>
                 <li>The remaining balance is due two (2) months prior to the event date.</li>
                 <li>Once the remaining balance is charged, it is non-refundable.</li>
                 <li>If cancellation occurs more than two (2) months before the event date, only the deposit will be retained and the remaining balance will not be charged.</li>
