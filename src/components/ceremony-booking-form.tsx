@@ -25,11 +25,9 @@ export function CeremonyBookingForm() {
   const { isLoaded: mapsLoaded } = useGoogleMaps();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
   // Form state
   const [eventDate, setEventDate] = useState("");
   const [eventStartTime, setEventStartTime] = useState("14:00"); // 2:00 PM
-  const [eventEndTime, setEventEndTime] = useState("16:00");     // 4:00 PM
   const [venueAddress, setVenueAddress] = useState("Hotel Vista, Canmore");
   
   // Google Places data for venue
@@ -77,11 +75,8 @@ export function CeremonyBookingForm() {
 
     try {
       const bookingDate = new Date(`${eventDate}T${eventStartTime}`);
-      let eventEnd = new Date(`${eventDate}T${eventEndTime}`);
-      
-      if (eventEnd <= bookingDate) {
-        eventEnd = new Date(eventEnd.getTime() + 24 * 60 * 60 * 1000);
-      }
+      // Calculate end time from start time + hours
+      const eventEnd = new Date(bookingDate.getTime() + hours * 60 * 60 * 1000);
 
       const res = await fetch("/api/bookings", {
         method: "POST",
@@ -104,7 +99,7 @@ export function CeremonyBookingForm() {
           passengers: guestCount,
           eventStartTime: bookingDate.toISOString(),
           eventEndTime: eventEnd.toISOString(),
-          additionalHours: hours - CEREMONY_HOTEL_VISTA.minHours,
+          additionalHours: hours, // Send total hours, backend uses this directly
         }),
       });
 

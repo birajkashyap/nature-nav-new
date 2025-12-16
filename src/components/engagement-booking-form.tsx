@@ -25,11 +25,9 @@ export function EngagementBookingForm() {
   const { isLoaded: mapsLoaded } = useGoogleMaps();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
   // Form state
   const [eventDate, setEventDate] = useState("");
   const [eventStartTime, setEventStartTime] = useState("14:00"); // 2:00 PM
-  const [eventEndTime, setEventEndTime] = useState("17:00");     // 5:00 PM
   const [venueAddress, setVenueAddress] = useState("");
   
   // Google Places data for venue
@@ -77,11 +75,8 @@ export function EngagementBookingForm() {
 
     try {
       const bookingDate = new Date(`${eventDate}T${eventStartTime}`);
-      let eventEnd = new Date(`${eventDate}T${eventEndTime}`);
-      
-      if (eventEnd <= bookingDate) {
-        eventEnd = new Date(eventEnd.getTime() + 24 * 60 * 60 * 1000);
-      }
+      // Calculate end time from start time + hours
+      const eventEnd = new Date(bookingDate.getTime() + hours * 60 * 60 * 1000);
 
       const res = await fetch("/api/bookings", {
         method: "POST",
@@ -104,7 +99,7 @@ export function EngagementBookingForm() {
           passengers: guestCount,
           eventStartTime: bookingDate.toISOString(),
           eventEndTime: eventEnd.toISOString(),
-          additionalHours: hours - ENGAGEMENT_SERVICE.minHours,
+          additionalHours: hours, // Send total hours, backend uses this directly
         }),
       });
 
