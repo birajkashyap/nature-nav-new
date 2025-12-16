@@ -273,7 +273,7 @@ function ProfileContent() {
                         {activeBooking.payment100
                           ? "Fully Paid"
                           : activeBooking.payment50
-                          ? "Deposit Paid (50% Remaining)"
+                          ? "Deposit Paid (70% Remaining)"
                           : "Pending Deposit"}
                       </p>
                     </div>
@@ -307,7 +307,7 @@ function ProfileContent() {
                     className="bg-accent text-accent-foreground hover:opacity-90"
                     onClick={() => window.location.href = activeBooking.finalPaymentUrl!}
                   >
-                    Pay Remaining 50%
+                    Pay Remaining 70%
                   </Button>
                 </div>
               )}

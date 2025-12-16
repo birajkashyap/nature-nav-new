@@ -400,8 +400,8 @@ export function WeddingBookingForm() {
               <span>${pricing.total.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-accent font-semibold">
-              <span>Deposit (50%)</span>
-              <span>${(pricing.total * 0.5).toFixed(2)}</span>
+              <span>Deposit (30%)</span>
+              <span>${(pricing.total * 0.3).toFixed(2)}</span>
             </div>
           </div>
         </Card>
@@ -425,7 +425,7 @@ export function WeddingBookingForm() {
           >
             Terms & Conditions
           </Link>
-          , including the 35% non-refundable deposit and cancellation policy.
+          , including the 30% non-refundable deposit and cancellation policy.
         </label>
       </div>
 
@@ -435,7 +435,7 @@ export function WeddingBookingForm() {
         size="lg"
         className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Processing..." : `Proceed to Payment (50% Deposit)`}
+        {loading ? "Processing..." : `Proceed to Payment (30% Deposit)`}
       </Button>
     </form>
   );

@@ -5,7 +5,7 @@ const PRICING = {
   BASE_FARE: 50, // Base fee in CAD
   PER_KM: 2.5,   // Price per km
   MIN_FARE: 100, // Minimum fare
-  DEPOSIT_PERCENTAGE: 0.5, // 50% deposit
+  DEPOSIT_PERCENTAGE: 0.3, // 30% deposit
 };
 
 // Mock distance calculator (deterministic based on string length)

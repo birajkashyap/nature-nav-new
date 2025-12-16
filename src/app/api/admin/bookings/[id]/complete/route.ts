@@ -56,7 +56,7 @@ export async function POST(
             currency: "cad",
             product_data: {
               name: `Final Payment for ${booking.car}`,
-              description: `Remaining 50% Balance - ${booking.pickup} to ${booking.drop}`,
+              description: `Remaining 70% Balance - ${booking.pickup} to ${booking.drop}`,
             },
               unit_amount: amountInCents,
           },

@@ -171,7 +171,7 @@ function BookingForm() {
         `Trip Details:\n` +
         `Distance: ~${priceDetails.distanceKm} km\n` +
         `Total Price: $${priceDetails.totalPrice}\n` +
-        `Required Deposit (50%): $${priceDetails.depositAmount}\n\n` +
+        `Required Deposit (30%): $${priceDetails.depositAmount}\n\n` +
         `Proceed to payment?`
       );
 
@@ -426,7 +426,7 @@ function BookingForm() {
         size="lg"
         className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Processing..." : "Proceed to Payment (50% Deposit)"}
+        {loading ? "Processing..." : "Proceed to Payment (30% Deposit)"}
       </Button>
 
       {!session && (
