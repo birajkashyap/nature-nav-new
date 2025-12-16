@@ -57,12 +57,6 @@ const servicesData: ServiceData[] = [
         hourly_suv: "C$163/Hr",
         hourly_van: "C$213/Hr",
       },
-      {
-        name: "Ceremony Guest Pick-Up & Drop-Off (Add-On)",
-        details:
-          "1-3 hours before ceremony. Transfers from hotels/Airbnbs to the ceremony venue.",
-        price: "C$750 (Minimum Charge)",
-      },
     ],
     features: [
       "Professional Coordination",
