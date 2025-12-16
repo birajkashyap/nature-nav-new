@@ -141,15 +141,33 @@ const servicesData: ServiceData[] = [
   },
   {
     icon: MapPin,
-    title: "Private Tours & Excursions",
-    image: "/service-tours.jpg",
+    title: "Ceremony & Engagement",
+    image: "/service-ceremony.png",
     description:
-      "Customized sightseeing tours across the Canadian Rockies with expert local chauffeurs.",
+      "Elegant transportation for your engagement celebrations and hotel ceremonies in the stunning Canadian Rockies.",
+    pricing: [
+      {
+        name: "Engagement Service",
+        details:
+          "Minimum 3 hours. Perfect for engagement parties, proposals, and celebratory events.",
+        price: "C$450 + GST (Min)",
+        hourly_suv: "C$163/Hr",
+        hourly_van: "C$213/Hr",
+      },
+      {
+        name: "Ceremony at Hotel Vista",
+        details:
+          "Minimum 2 hours. Guest transfers to/from Hotel Vista, Canmore.",
+        price: "C$350 + GST (Min)",
+        hourly_suv: "C$163/Hr",
+        hourly_van: "C$213/Hr",
+      },
+    ],
     features: [
-      "Custom itinerary planning",
-      "Expert local chauffeurs",
-      "Full-day & half-day packages",
-      "VIP access coordination",
+      "Luxury vehicle options",
+      "Professional chauffeurs",
+      "Coordination with venue",
+      "Flexible scheduling",
     ],
   },
 ];
@@ -258,6 +276,58 @@ const ServicesPage = () => {
           <p className="text-xs text-foreground/70 pt-2">
             *Prices are one-way and subject to change.
           </p>
+        </div>
+      );
+    }
+
+    // Ceremony & Engagement pricing display
+    if (service.title.includes("Ceremony") && service.pricing) {
+      const engagement = service.pricing[0];
+      const ceremony = service.pricing[1];
+
+      return (
+        <div className="space-y-4 pt-3">
+          <h3 className="text-xl font-luxury text-accent dark:text-accent-dark">
+            Pricing Summary
+          </h3>
+
+          {/* Engagement Service */}
+          {engagement && (
+            <Card className="bg-muted/30 dark:bg-muted/50 p-4 border-l-4 border-accent dark:border-accent-dark shadow-sm">
+              <p className="text-sm font-semibold mb-1">{engagement.name}</p>
+              <p className="text-2xl font-bold text-foreground mb-2">
+                {engagement.price}
+              </p>
+              <p className="text-xs text-foreground/70 mb-2">{engagement.details}</p>
+              <div className="flex justify-between text-xs text-foreground/70">
+                <span>
+                  SUV: <strong>{engagement.hourly_suv}</strong>
+                </span>
+                <span>
+                  VAN: <strong>{engagement.hourly_van}</strong>
+                </span>
+              </div>
+            </Card>
+          )}
+
+          {/* Ceremony at Hotel Vista */}
+          {ceremony && (
+            <Card className="bg-muted/30 dark:bg-muted/50 p-4 border-l-4 border-muted/50 shadow-sm">
+              <p className="text-sm font-semibold mb-1">{ceremony.name}</p>
+              <p className="text-xl font-bold text-foreground/80 mb-2">
+                {ceremony.price}
+              </p>
+              <p className="text-xs text-foreground/70 mb-2">{ceremony.details}</p>
+              <div className="flex justify-between text-xs text-foreground/70">
+                <span>
+                  SUV: <strong>{ceremony.hourly_suv}</strong>
+                </span>
+                <span>
+                  VAN: <strong>{ceremony.hourly_van}</strong>
+                </span>
+              </div>
+            </Card>
+          )}
         </div>
       );
     }
