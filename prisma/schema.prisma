@@ -130,6 +130,8 @@ enum BookingType {
   WEDDING_SHUTTLE
   CEREMONY_PICKUP
   CUSTOM
+  ENGAGEMENT            // Engagement service - min 3 hours, $450 min
+  CEREMONY_HOTEL_VISTA  // Ceremony at Hotel Vista - min 2 hours, $350 min
 }
 
 // NEW: Add-On Services Model

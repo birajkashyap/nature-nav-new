@@ -31,6 +31,28 @@ export const WEDDING_SHUTTLE = {
   defaultEndTime: '02:00',   // 2:00 AM
 } as const;
 
+// NEW: Engagement Service - Min 3 hours, Min $450
+export const ENGAGEMENT_SERVICE = {
+  minPrice: 450,
+  minHours: 3,
+  hourlyRates: {
+    'Luxury SUV (7 Passengers)': 163,
+    'Transit Van (14 Passengers)': 213,
+  },
+  gstRate: 0.05,
+} as const;
+
+// NEW: Ceremony at Hotel Vista - Min 2 hours, Min $350
+export const CEREMONY_HOTEL_VISTA = {
+  minPrice: 350,
+  minHours: 2,
+  hourlyRates: {
+    'Luxury SUV (7 Passengers)': 163,
+    'Transit Van (14 Passengers)': 213,
+  },
+  gstRate: 0.05,
+} as const;
+
 export const ADD_ON_SERVICES = {
   CEREMONY_PICKUP_DROPOFF: {
     minCharge: 750,
@@ -162,6 +184,82 @@ export function calculateWeddingPrice(
     gst,
     total,
     hourlyRate,
+  };
+}
+
+/**
+ * Calculate engagement service price
+ * Min 3 hours, Min $450
+ */
+export function calculateEngagementPrice(
+  vehicle: string,
+  hours: number
+): {
+  minPrice: number;
+  hourlyRate: number;
+  hoursBooked: number;
+  subtotal: number;
+  gst: number;
+  total: number;
+} {
+  const minHours = ENGAGEMENT_SERVICE.minHours;
+  const hoursBooked = Math.max(hours, minHours);
+  const hourlyRate = ENGAGEMENT_SERVICE.hourlyRates[vehicle as keyof typeof ENGAGEMENT_SERVICE.hourlyRates] || 0;
+  
+  // Calculate based on hours
+  let subtotal = hourlyRate * hoursBooked;
+  
+  // Ensure minimum price
+  subtotal = Math.max(subtotal, ENGAGEMENT_SERVICE.minPrice);
+  
+  const gst = subtotal * ENGAGEMENT_SERVICE.gstRate;
+  const total = subtotal + gst;
+  
+  return {
+    minPrice: ENGAGEMENT_SERVICE.minPrice,
+    hourlyRate,
+    hoursBooked,
+    subtotal,
+    gst,
+    total,
+  };
+}
+
+/**
+ * Calculate ceremony at Hotel Vista price
+ * Min 2 hours, Min $350
+ */
+export function calculateCeremonyPrice(
+  vehicle: string,
+  hours: number
+): {
+  minPrice: number;
+  hourlyRate: number;
+  hoursBooked: number;
+  subtotal: number;
+  gst: number;
+  total: number;
+} {
+  const minHours = CEREMONY_HOTEL_VISTA.minHours;
+  const hoursBooked = Math.max(hours, minHours);
+  const hourlyRate = CEREMONY_HOTEL_VISTA.hourlyRates[vehicle as keyof typeof CEREMONY_HOTEL_VISTA.hourlyRates] || 0;
+  
+  // Calculate based on hours
+  let subtotal = hourlyRate * hoursBooked;
+  
+  // Ensure minimum price
+  subtotal = Math.max(subtotal, CEREMONY_HOTEL_VISTA.minPrice);
+  
+  const gst = subtotal * CEREMONY_HOTEL_VISTA.gstRate;
+  const total = subtotal + gst;
+  
+  return {
+    minPrice: CEREMONY_HOTEL_VISTA.minPrice,
+    hourlyRate,
+    hoursBooked,
+    subtotal,
+    gst,
+    total,
   };
 }
 

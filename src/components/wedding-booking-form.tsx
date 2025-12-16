@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,10 +10,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { calculateWeddingPrice, WEDDING_SHUTTLE } from "@/lib/pricing";
+import { 
+  calculateWeddingPrice, 
+  calculateEngagementPrice, 
+  calculateCeremonyPrice,
+  WEDDING_SHUTTLE,
+  ENGAGEMENT_SERVICE,
+  CEREMONY_HOTEL_VISTA 
+} from "@/lib/pricing";
 import { Card } from "@/components/ui/card";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
+
+// Event type options
+const EVENT_TYPES = [
+  { value: "WEDDING_SHUTTLE", label: "Wedding Shuttle", minHours: 4, basePrice: 850 },
+  { value: "ENGAGEMENT", label: "Engagement", minHours: 3, basePrice: 450 },
+  { value: "CEREMONY_HOTEL_VISTA", label: "Ceremony (Hotel Vista)", minHours: 2, basePrice: 350 },
+];
 
 const VEHICLE_OPTIONS = [
   { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 },
@@ -26,6 +40,9 @@ export function WeddingBookingForm() {
   const { isLoaded: mapsLoaded } = useGoogleMaps();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  // Event type selection
+  const [eventType, setEventType] = useState<string>("WEDDING_SHUTTLE");
   
   // Form state
   const [eventDate, setEventDate] = useState("");
@@ -103,7 +120,7 @@ export function WeddingBookingForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          bookingType: "WEDDING_SHUTTLE",
+          bookingType: eventType, // Dynamic event type
           // Legacy fields (backward compatibility)
           pickup: venueAddress,
           drop: venueAddress,
@@ -156,6 +173,27 @@ export function WeddingBookingForm() {
           {error}
         </div>
       )}
+
+      {/* Event Type Selection */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-accent">Service Type</h3>
+        
+        <div className="space-y-2">
+          <Label htmlFor="eventType">Select Service *</Label>
+          <Select value={eventType} onValueChange={setEventType}>
+            <SelectTrigger className="bg-background border-border">
+              <SelectValue placeholder="Select service type" />
+            </SelectTrigger>
+            <SelectContent>
+              {EVENT_TYPES.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label} (Min {type.minHours} hrs - Starting ${type.basePrice})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       {/* Event Details */}
       <div className="space-y-4">

@@ -6,6 +6,8 @@ import {
   determineRoute, 
   calculateAirportTransferPrice, 
   calculateWeddingPrice,
+  calculateEngagementPrice,
+  calculateCeremonyPrice,
   calculateDeposit,
   calculateDistanceBasedPrice,
 } from "@/lib/pricing";
@@ -100,6 +102,26 @@ export async function POST(req: Request) {
       depositAmount = calculateDeposit(totalPrice);
       basePrice = pricing.basePrice;
       hourlyRate = pricing.hourlyRate;
+
+    } else if (bookingType === "ENGAGEMENT") {
+      // Engagement service pricing - min 3 hours, min $450
+      const hours = additionalHours || 3; // Default to minimum
+      const pricing = calculateEngagementPrice(car, hours);
+      
+      totalPrice = pricing.total;
+      depositAmount = calculateDeposit(totalPrice);
+      hourlyRate = pricing.hourlyRate;
+      pricingMethod = "HOURLY_ENGAGEMENT";
+
+    } else if (bookingType === "CEREMONY_HOTEL_VISTA") {
+      // Ceremony at Hotel Vista pricing - min 2 hours, min $350
+      const hours = additionalHours || 2; // Default to minimum
+      const pricing = calculateCeremonyPrice(car, hours);
+      
+      totalPrice = pricing.total;
+      depositAmount = calculateDeposit(totalPrice);
+      hourlyRate = pricing.hourlyRate;
+      pricingMethod = "HOURLY_CEREMONY";
 
     } else if (bookingType === "AIRPORT_TRANSFER") {
       // DYNAMIC DISTANCE-BASED PRICING
