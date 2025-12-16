@@ -32,8 +32,6 @@ import {
 import { WeddingBookingForm } from "@/components/wedding-booking-form";
 import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
-import { estimateRoadDistance } from "@/lib/distance";
-import { calculateDistanceBasedPrice, calculateDeposit } from "@/lib/pricing";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,11 +63,11 @@ function BookingForm() {
   const [passengers, setPassengers] = useState<number>(1);
   const [selectedVehicle, setSelectedVehicle] = useState<string>("");
   
-  // Location state
+  // Location state - Calgary Airport as default with coordinates
   const [pickup, setPickup] = useState("Calgary International Airport");
-  const [pickupPlaceId, setPickupPlaceId] = useState("");
-  const [pickupLat, setPickupLat] = useState<number | null>(null);
-  const [pickupLng, setPickupLng] = useState<number | null>(null);
+  const [pickupPlaceId, setPickupPlaceId] = useState("ChIJxSgLCOBvcVMRLzp8z0lhlpA"); // YYC Place ID
+  const [pickupLat, setPickupLat] = useState<number | null>(51.1313); // YYC coordinates
+  const [pickupLng, setPickupLng] = useState<number | null>(-114.0108);
   
   const [drop, setDrop] = useState("");
   const [dropPlaceId, setDropPlaceId] = useState("");
@@ -81,35 +79,57 @@ function BookingForm() {
   
   // Price estimate state
   const [priceEstimate, setPriceEstimate] = useState<{
-    distanceKm: number;
+    distanceKm: number | null;
     totalPrice: number;
     depositAmount: number;
   } | null>(null);
+  const [loadingPrice, setLoadingPrice] = useState(false);
 
-  // Calculate price estimate when locations/vehicle change
+  // Fetch price estimate from API when locations/vehicle change
   useEffect(() => {
-    if (pickupLat && pickupLng && dropLat && dropLng && selectedVehicle) {
-      try {
-        const distance = estimateRoadDistance(
-          { lat: pickupLat, lng: pickupLng },
-          { lat: dropLat, lng: dropLng }
-        );
-        const pricing = calculateDistanceBasedPrice(distance, selectedVehicle);
-        const deposit = calculateDeposit(pricing.finalPrice);
-        
-        setPriceEstimate({
-          distanceKm: distance,
-          totalPrice: pricing.finalPrice,
-          depositAmount: deposit,
-        });
-      } catch (error) {
-        console.error('Price calculation error:', error);
+    async function fetchPriceEstimate() {
+      // Need drop location AND vehicle to calculate price
+      if (!drop || !selectedVehicle) {
         setPriceEstimate(null);
+        return;
       }
-    } else {
-      setPriceEstimate(null);
+
+      setLoadingPrice(true);
+      try {
+        const params = new URLSearchParams({
+          pickup: pickup,
+          drop: drop,
+          vehicle: selectedVehicle,
+          ...(pickupLat && { pickupLat: pickupLat.toString() }),
+          ...(pickupLng && { pickupLng: pickupLng.toString() }),
+          ...(dropLat && { dropLat: dropLat.toString() }),
+          ...(dropLng && { dropLng: dropLng.toString() }),
+        });
+
+        const res = await fetch(`/api/price-estimate?${params}`);
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          setPriceEstimate({
+            distanceKm: data.distanceKm,
+            totalPrice: data.totalPrice,
+            depositAmount: data.depositAmount,
+          });
+        } else {
+          setPriceEstimate(null);
+        }
+      } catch (error) {
+        console.error('Price estimate error:', error);
+        setPriceEstimate(null);
+      } finally {
+        setLoadingPrice(false);
+      }
     }
-  }, [pickupLat, pickupLng, dropLat, dropLng, selectedVehicle]);
+
+    // Debounce the API call
+    const timeoutId = setTimeout(fetchPriceEstimate, 500);
+    return () => clearTimeout(timeoutId);
+  }, [pickup, drop, pickupLat, pickupLng, dropLat, dropLng, selectedVehicle]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -417,7 +437,15 @@ function BookingForm() {
       </div>
 
       {/* Price Estimate Card */}
-      {priceEstimate && (
+      {loadingPrice && (
+        <Card className="bg-card/50 border-accent/30 overflow-hidden">
+          <div className="p-5 flex items-center gap-3 text-muted-foreground">
+            <div className="animate-spin w-5 h-5 border-2 border-accent border-t-transparent rounded-full" />
+            <span>Calculating price...</span>
+          </div>
+        </Card>
+      )}
+      {priceEstimate && !loadingPrice && (
         <Card className="bg-card/50 border-accent/30 overflow-hidden">
           <div className="p-5 space-y-4">
             <div className="flex items-center gap-2 text-accent">
@@ -426,10 +454,12 @@ function BookingForm() {
             </div>
             
             <div className="space-y-3">
-              <div className="flex justify-between items-center pb-2 border-b border-border">
-                <span className="text-muted-foreground">Estimated Distance</span>
-                <span className="font-medium">~{priceEstimate.distanceKm.toFixed(0)} km</span>
-              </div>
+              {priceEstimate.distanceKm && (
+                <div className="flex justify-between items-center pb-2 border-b border-border">
+                  <span className="text-muted-foreground">Estimated Distance</span>
+                  <span className="font-medium">~{priceEstimate.distanceKm} km</span>
+                </div>
+              )}
               
               <div className="flex justify-between items-center pb-2 border-b border-border">
                 <span className="text-muted-foreground">Total Price</span>
@@ -448,7 +478,7 @@ function BookingForm() {
             </div>
             
             <p className="text-xs text-muted-foreground pt-2 border-t border-border">
-              * Final price based on exact route. Estimate uses straight-line distance.
+              * This is the exact amount you will pay.
             </p>
           </div>
         </Card>
