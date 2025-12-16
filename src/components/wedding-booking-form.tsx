@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,6 +45,7 @@ export function WeddingBookingForm() {
   const [ceremonyTime, setCeremonyTime] = useState("");
   const [pickupLocations, setPickupLocations] = useState("");
   const [notes, setNotes] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState<boolean>(false);
 
   // Auto-select vehicle based on guest count
   function handleGuestCountChange(count: number) {
@@ -405,11 +407,33 @@ export function WeddingBookingForm() {
         </Card>
       )}
 
+      {/* Terms & Conditions Agreement */}
+      <div className="flex items-start gap-3 p-4 rounded-lg bg-muted/30 border border-border">
+        <input
+          type="checkbox"
+          id="wedding-terms-agreement"
+          checked={agreedToTerms}
+          onChange={(e) => setAgreedToTerms(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-border accent-accent cursor-pointer"
+        />
+        <label htmlFor="wedding-terms-agreement" className="text-sm text-foreground/80 cursor-pointer">
+          I have read and agree to the{" "}
+          <Link 
+            href="/terms" 
+            target="_blank" 
+            className="text-accent hover:underline font-medium"
+          >
+            Terms & Conditions
+          </Link>
+          , including the 35% non-refundable deposit and cancellation policy.
+        </label>
+      </div>
+
       <Button
         type="submit"
-        disabled={loading || !selectedVehicle}
+        disabled={loading || !selectedVehicle || !agreedToTerms}
         size="lg"
-        className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01]"
+        className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? "Processing..." : `Proceed to Payment (50% Deposit)`}
       </Button>

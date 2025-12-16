@@ -80,22 +80,42 @@ const servicesData: ServiceData[] = [
     routes: [
       {
         vehicle: "Luxury SUV (7 Pax)",
-        route: "YYC ↔ Canmore",
+        route: "YYC → Canmore",
         price: "C$518.44",
       },
       {
         vehicle: "Luxury SUV (7 Pax)",
-        route: "YYC ↔ Banff",
+        route: "Canmore → YYC",
+        price: "C$518.44",
+      },
+      {
+        vehicle: "Luxury SUV (7 Pax)",
+        route: "YYC → Banff",
+        price: "C$681.45",
+      },
+      {
+        vehicle: "Luxury SUV (7 Pax)",
+        route: "Banff → YYC",
         price: "C$681.45",
       },
       {
         vehicle: "Transit Van (14 Pax)",
-        route: "YYC ↔ Canmore",
+        route: "YYC → Canmore",
         price: "C$685.13",
       },
       {
         vehicle: "Transit Van (14 Pax)",
-        route: "YYC ↔ Banff",
+        route: "Canmore → YYC",
+        price: "C$685.13",
+      },
+      {
+        vehicle: "Transit Van (14 Pax)",
+        route: "YYC → Banff",
+        price: "C$897.00",
+      },
+      {
+        vehicle: "Transit Van (14 Pax)",
+        route: "Banff → YYC",
         price: "C$897.00",
       },
     ],
