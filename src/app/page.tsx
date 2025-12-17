@@ -247,9 +247,10 @@ const Home = () => {
               </p>
 
               <p className="text-lg text-foreground/70 leading-relaxed">
-                From intimate engagements to elegant hotel ceremonies, Nature Navigator 
-                provides premium transportation for life's most cherished moments in the 
-                stunning Canadian Rockies.
+                Nature Navigator provides safe and reliable transportation for all your guests, 
+                ensuring comfortable drop-offs from the wedding venue at the end of the night. 
+                We help your guests travel with ease so they feel relaxed and well cared for 
+                in the Canadian Rockies.
               </p>
 
               <ul className="space-y-3 text-foreground/80">
