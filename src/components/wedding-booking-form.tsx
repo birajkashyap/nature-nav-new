@@ -41,10 +41,7 @@ export function WeddingBookingForm() {
   const [guestCount, setGuestCount] = useState(1);
   const [luggageCount, setLuggageCount] = useState(0);
   const [selectedVehicle, setSelectedVehicle] = useState("");
-  const [additionalHours, setAdditionalHours] = useState(0);
-  const [addOns, setAddOns] = useState<string[]>([]);
-  const [ceremonyTime, setCeremonyTime] = useState("");
-  const [pickupLocations, setPickupLocations] = useState("");
+  const [hours, setHours] = useState(4); // Default 4 hours
   const [notes, setNotes] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState<boolean>(false);
 
@@ -59,16 +56,9 @@ export function WeddingBookingForm() {
     }
   }
 
-  // Toggle add-on
-  function toggleAddOn(addOn: string) {
-    setAddOns((prev) =>
-      prev.includes(addOn) ? prev.filter((a) => a !== addOn) : [...prev, addOn]
-    );
-  }
-
   // Calculate pricing
   const pricing = selectedVehicle
-    ? calculateWeddingPrice(selectedVehicle, additionalHours, addOns)
+    ? calculateWeddingPrice(selectedVehicle, hours)
     : null;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -122,15 +112,7 @@ export function WeddingBookingForm() {
           notes,
           eventStartTime: bookingDate.toISOString(),
           eventEndTime: eventEnd.toISOString(),
-          additionalHours,
-          addOns: addOns.map((addOnType) => ({
-            addOnType,
-            serviceName: addOnType === "CEREMONY_PICKUP_DROPOFF" ? "Ceremony Guest Pickup/Drop-off" : addOnType,
-            price: addOnType === "CEREMONY_PICKUP_DROPOFF" ? 750 : 0,
-            duration: addOnType === "CEREMONY_PICKUP_DROPOFF" ? 3 : null,
-            pickupLocation: pickupLocations || null,
-            notes: ceremonyTime ? `Ceremony time: ${ceremonyTime}` : null,
-          })),
+          additionalHours: hours, // Total service hours
         }),
       });
 
@@ -317,71 +299,41 @@ export function WeddingBookingForm() {
 
       {/* Service Duration */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-accent">Service Duration</h3>
+        <h3 className="text-lg font-semibold text-accent">Duration</h3>
         <p className="text-sm text-muted-foreground">
-          Base service includes 4 hours. Add extended hours if needed.
+          Select total service hours (minimum 2 hours required).
         </p>
         
+        {/* Service Hours */}
         <div className="space-y-2">
-          <Label htmlFor="additionalHours">Additional Hours (0-4)</Label>
-          <Input
-            id="additionalHours"
-            type="number"
-            min="0"
-            max="4"
-            value={additionalHours}
-            onChange={(e) => setAdditionalHours(parseInt(e.target.value) || 0)}
-          />
-          {selectedVehicle && additionalHours > 0 && (
+          <Label>Service Hours (Minimum 2 hours)</Label>
+          <div className="flex items-center gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setHours(Math.max(2, hours - 1))}
+              disabled={hours <= 2}
+            >
+              -
+            </Button>
+            <span className="text-2xl font-bold w-16 text-center">{hours}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => setHours(hours + 1)}
+            >
+              +
+            </Button>
+            <span className="text-muted-foreground">hours</span>
+          </div>
+          {selectedVehicle && (
             <p className="text-xs text-muted-foreground">
               Rate: ${WEDDING_SHUTTLE.hourlyRates[selectedVehicle as keyof typeof WEDDING_SHUTTLE.hourlyRates]}/hour
             </p>
           )}
         </div>
-      </div>
-
-      {/* Add-On Services */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-accent">Add-On Services</h3>
-        
-        <div className="flex items-start space-x-3">
-          <Checkbox
-            id="ceremonyPickup"
-            checked={addOns.includes("CEREMONY_PICKUP_DROPOFF")}
-            onCheckedChange={() => toggleAddOn("CEREMONY_PICKUP_DROPOFF")}
-          />
-          <div className="space-y-1">
-            <Label htmlFor="ceremonyPickup" className="cursor-pointer">
-              Ceremony Guest Pickup/Drop-off ($750)
-            </Label>
-            <p className="text-xs text-muted-foreground">
-              1-3 hours before ceremony - transfers from hotels/Airbnbs to venue
-            </p>
-          </div>
-        </div>
-
-        {addOns.includes("CEREMONY_PICKUP_DROPOFF") && (
-          <div className="ml-8 space-y-4 border-l-2 border-accent/20 pl-4">
-            <div className="space-y-2">
-              <Label htmlFor="ceremonyTime">Ceremony Time</Label>
-              <Input
-                id="ceremonyTime"
-                type="time"
-                value={ceremonyTime}
-                onChange={(e) => setCeremonyTime(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pickupLocations">Pickup Locations</Label>
-              <Textarea
-                id="pickupLocations"
-                value={pickupLocations}
-                onChange={(e) => setPickupLocations(e.target.value)}
-                placeholder="List hotels/Airbnbs for guest pickup..."
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Additional Notes */}
@@ -401,21 +353,9 @@ export function WeddingBookingForm() {
           <h3 className="text-lg font-semibold mb-4">Price Summary</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span>Base Wedding Shuttle (4 hours)</span>
+              <span>Service ({hours} hours @ ${pricing.hourlyRate}/hr)</span>
               <span>${pricing.basePrice.toFixed(2)}</span>
             </div>
-            {additionalHours > 0 && (
-              <div className="flex justify-between">
-                <span>Additional {additionalHours} hour(s) @ ${pricing.hourlyRate}/hr</span>
-                <span>${pricing.additionalHoursCost.toFixed(2)}</span>
-              </div>
-            )}
-            {pricing.ceremonyPickupCost > 0 && (
-              <div className="flex justify-between">
-                <span>Ceremony Pickup/Drop-off</span>
-                <span>${pricing.ceremonyPickupCost.toFixed(2)}</span>
-              </div>
-            )}
             <div className="border-t border-accent/20 pt-2 mt-2"></div>
             <div className="flex justify-between">
               <span>Subtotal</span>

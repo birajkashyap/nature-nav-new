@@ -19,9 +19,9 @@ export const AIRPORT_ROUTES = {
   },
 } as const;
 
+
 export const WEDDING_SHUTTLE = {
-  basePrice: 850,
-  baseHours: 4,
+  minHours: 2,
   hourlyRates: {
     'Luxury SUV (5 Passengers)': 163,
     'Transit Van (14 Passengers)': 213,
@@ -51,15 +51,6 @@ export const CEREMONY_HOTEL_VISTA = {
     'Transit Van (14 Passengers)': 213,
   },
   gstRate: 0.05,
-} as const;
-
-export const ADD_ON_SERVICES = {
-  CEREMONY_PICKUP_DROPOFF: {
-    minCharge: 750,
-    minHours: 1,
-    maxHours: 3,
-    description: 'Ceremony guest pickup & drop-off (1-3 hours before ceremony)',
-  },
 } as const;
 
 // Map hotel names to their respective cities for route determination
@@ -148,39 +139,28 @@ export function calculateAirportTransferPrice(
 }
 
 /**
- * Calculate wedding shuttle price with add-ons
+ * Calculate wedding shuttle price based on hours
  */
 export function calculateWeddingPrice(
   vehicle: string,
-  additionalHours: number,
-  hasaddOns: string[]
+  hours: number
 ): {
   basePrice: number;
-  additionalHoursCost: number;
-  ceremonyPickupCost: number;
   subtotal: number;
   gst: number;
   total: number;
   hourlyRate: number;
 } {
-  const basePrice = WEDDING_SHUTTLE.basePrice;
   const hourlyRate = WEDDING_SHUTTLE.hourlyRates[vehicle as keyof typeof WEDDING_SHUTTLE.hourlyRates] || 0;
+  const actualHours = Math.max(hours, WEDDING_SHUTTLE.minHours);
   
-  const additionalHoursCost = hourlyRate * (additionalHours || 0);
-  
-  const ceremonyPickupCost = hasaddOns.includes('CEREMONY_PICKUP_DROPOFF')
-    ? ADD_ON_SERVICES.CEREMONY_PICKUP_DROPOFF.minCharge
-    : 0;
-  
-  const subtotal = basePrice + additionalHoursCost + ceremonyPickupCost;
-  const gst = subtotal * WEDDING_SHUTTLE.gstRate;
-  const total = subtotal + gst;
+  const basePrice = hourlyRate * actualHours;
+  const gst = basePrice * WEDDING_SHUTTLE.gstRate;
+  const total = basePrice + gst;
   
   return {
     basePrice,
-    additionalHoursCost,
-    ceremonyPickupCost,
-    subtotal,
+    subtotal: basePrice,
     gst,
     total,
     hourlyRate,

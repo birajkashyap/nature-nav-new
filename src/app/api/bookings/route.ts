@@ -94,9 +94,9 @@ export async function POST(req: Request) {
     let tierBreakdownJson: string | null = null;
 
     if (bookingType === "WEDDING_SHUTTLE") {
-      // Wedding shuttle pricing
-      const addOnTypes = addOns.map((a: any) => a.addOnType);
-      const pricing = calculateWeddingPrice(car, additionalHours, addOnTypes);
+      // Wedding shuttle pricing - hours based
+      const hours = additionalHours || 4; // Default to 4 hours if not provided
+      const pricing = calculateWeddingPrice(car, hours);
       
       totalPrice = pricing.total;
       depositAmount = calculateDeposit(totalPrice);
