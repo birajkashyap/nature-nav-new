@@ -70,8 +70,8 @@ export async function POST(
             currency: "cad",
             product_data: {
               name: booking.bookingType === "WEDDING_SHUTTLE"
-                ? `Wedding Shuttle Service - 30% Deposit`
-                : `${booking.car} - 30% Deposit`,
+                ? `Wedding Shuttle Service - 35% Deposit`
+                : `${booking.car} - 35% Deposit`,
               description: booking.bookingType === "WEDDING_SHUTTLE"
                 ? `Event Date: ${new Date(booking.date).toLocaleDateString()}`
                 : `${booking.pickup} to ${booking.drop} on ${new Date(booking.date).toLocaleDateString()}`,

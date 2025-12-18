@@ -431,8 +431,8 @@ export function WeddingBookingForm() {
               <span>${pricing.total.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-accent font-semibold">
-              <span>Deposit (30%)</span>
-              <span>${(pricing.total * 0.3).toFixed(2)}</span>
+              <span>Deposit (35%)</span>
+              <span>${(pricing.total * 0.35).toFixed(2)}</span>
             </div>
           </div>
         </Card>
@@ -466,7 +466,7 @@ export function WeddingBookingForm() {
         size="lg"
         className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Processing..." : `Proceed to Payment (30% Deposit)`}
+        {loading ? "Processing..." : `Proceed to Payment (35% Deposit)`}
       </Button>
     </form>
   );

@@ -323,7 +323,7 @@ export async function sendBookingConfirmationEmail(
                     <span>C$${booking.totalPrice.toFixed(2)}</span>
                   </div>
                   <div class="payment-row highlight">
-                    <span>✓ Deposit Paid (30%)</span>
+                    <span>✓ Deposit Paid (35%)</span>
                     <span>C$${booking.depositAmount.toFixed(2)}</span>
                   </div>
                   <div class="payment-row remaining">
