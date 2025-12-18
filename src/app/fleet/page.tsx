@@ -20,7 +20,7 @@ const fleetData = [
   {
     name: "Luxury SUV",
     image: "/suv.jpg",
-    capacity: "Up to 7 passengers",
+    capacity: "Up to 5 passengers",
     luggage: "4-6 bags",
     features: [
       "Premium leather interior",

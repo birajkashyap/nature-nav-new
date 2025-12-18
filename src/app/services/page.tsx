@@ -73,22 +73,22 @@ const servicesData: ServiceData[] = [
       "Reliable executive transfers between Calgary International Airport (YYC) and the Canadian Rockies.",
     routes: [
       {
-        vehicle: "Luxury SUV (7 Pax)",
+        vehicle: "Luxury SUV (5 Pax)",
         route: "YYC → Canmore",
         price: "C$518.44",
       },
       {
-        vehicle: "Luxury SUV (7 Pax)",
+        vehicle: "Luxury SUV (5 Pax)",
         route: "Canmore → YYC",
         price: "C$518.44",
       },
       {
-        vehicle: "Luxury SUV (7 Pax)",
+        vehicle: "Luxury SUV (5 Pax)",
         route: "YYC → Banff",
         price: "C$681.45",
       },
       {
-        vehicle: "Luxury SUV (7 Pax)",
+        vehicle: "Luxury SUV (5 Pax)",
         route: "Banff → YYC",
         price: "C$681.45",
       },
