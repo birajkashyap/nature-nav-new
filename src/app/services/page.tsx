@@ -50,10 +50,10 @@ const servicesData: ServiceData[] = [
       "Elegant, coordinated transportation for your special day, covering venues across the Rockies.",
     pricing: [
       {
-        name: "Standard Wedding Shuttle",
+        name: "Wedding Shuttle Service",
         details:
-          "10:00 PM – 2:00 AM, includes luxury shuttle, chauffeur, fuel, and coordination. Final 30 minutes (2:00 AM-2:30 AM) complimentary.",
-        price: "C$850 + GST",
+          "Flexible hours (minimum 2 hours). Includes luxury shuttle, chauffeur, fuel, and coordination.",
+        price: "Hourly rates apply",
         hourly_suv: "C$163/Hr",
         hourly_van: "C$213/Hr",
       },
