@@ -152,8 +152,79 @@ const Home = () => {
         </div>
       </section>
 
-      {/* FIFA 2026 PROMOTION */}
+      {/* CEREMONY & ENGAGEMENT PROMOTION */}
       <section className="py-24 px-4 bg-muted/30 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/30 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Image */}
+            <div className="rounded-2xl overflow-hidden shadow-2xl border-2 border-accent/30 group">
+              <img
+                src="/service-ceremony.png"
+                alt="Ceremony & Engagement Transportation"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+
+            {/* Content */}
+            <div className="space-y-6">
+              <div className="inline-block px-4 py-2 bg-accent/20 border border-accent/50 rounded-full mb-4">
+                <span className="text-accent font-semibold text-sm tracking-wide">💍 SPECIAL OCCASIONS</span>
+              </div>
+
+              <h2 className="text-4xl md:text-5xl font-luxury text-accent leading-tight">
+                Ceremony & Engagement
+              </h2>
+
+              <p className="text-2xl font-semibold text-foreground/90">
+                Celebrate Your Special Moments in Style
+              </p>
+
+              <p className="text-lg text-foreground/70 leading-relaxed">
+                Nature Navigator provides safe and reliable transportation for all your guests, 
+                ensuring comfortable drop-offs from the wedding venue at the end of the night. 
+                We help your guests travel with ease so they feel relaxed and well cared for 
+                in the Canadian Rockies.
+              </p>
+
+              <ul className="space-y-3 text-foreground/80">
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Ceremony Pick-Up - Starting from C$650 (Min 3 hrs)
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Wedding Venue at Vista - Starting from C$450 (Min 2 hrs)
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Luxury SUV & Transit Van options available
+                </li>
+                <li className="flex items-start">
+                  <span className="text-accent mr-2">✓</span>
+                  Professional chauffeurs & venue coordination
+                </li>
+              </ul>
+
+              <div className="pt-6">
+                <Link
+                  href="/contact"
+                  className="inline-block bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-lg px-10 py-4 rounded-full shadow-xl transition-all hover:scale-105 hover:shadow-accent/50">
+                  Book Your Celebration Ride
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FIFA 2026 PROMOTION */}
+      <section className="py-24 px-4 bg-background relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
@@ -162,17 +233,8 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Image */}
-            <div className="order-2 lg:order-1 rounded-2xl overflow-hidden shadow-2xl border-2 border-accent/30 group">
-              <img
-                src="/fifa-2026.png"
-                alt="FIFA 2026 VIP Transportation"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </div>
-
             {/* Content */}
-            <div className="order-1 lg:order-2 space-y-6">
+            <div className="space-y-6">
               <div className="inline-block px-4 py-2 bg-accent/20 border border-accent/50 rounded-full mb-4">
                 <span className="text-accent font-semibold text-sm tracking-wide">🏆 SPECIAL EVENT</span>
               </div>
@@ -218,74 +280,12 @@ const Home = () => {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CEREMONY & ENGAGEMENT PROMOTION */}
-      <section className="py-24 px-4 bg-background relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/30 rounded-full blur-3xl" />
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Content */}
-            <div className="space-y-6">
-              <div className="inline-block px-4 py-2 bg-accent/20 border border-accent/50 rounded-full mb-4">
-                <span className="text-accent font-semibold text-sm tracking-wide">💍 SPECIAL OCCASIONS</span>
-              </div>
-
-              <h2 className="text-4xl md:text-5xl font-luxury text-accent leading-tight">
-                Ceremony & Engagement
-              </h2>
-
-              <p className="text-2xl font-semibold text-foreground/90">
-                Celebrate Your Special Moments in Style
-              </p>
-
-              <p className="text-lg text-foreground/70 leading-relaxed">
-                Nature Navigator provides safe and reliable transportation for all your guests, 
-                ensuring comfortable drop-offs from the wedding venue at the end of the night. 
-                We help your guests travel with ease so they feel relaxed and well cared for 
-                in the Canadian Rockies.
-              </p>
-
-              <ul className="space-y-3 text-foreground/80">
-                <li className="flex items-start">
-                  <span className="text-accent mr-2">✓</span>
-                  Engagement Service - Starting from C$450 (Min 3 hrs)
-                </li>
-                <li className="flex items-start">
-                  <span className="text-accent mr-2">✓</span>
-                  Ceremony at Hotel Vista - Starting from C$350 (Min 2 hrs)
-                </li>
-                <li className="flex items-start">
-                  <span className="text-accent mr-2">✓</span>
-                  Luxury SUV & Transit Van options available
-                </li>
-                <li className="flex items-start">
-                  <span className="text-accent mr-2">✓</span>
-                  Professional chauffeurs & venue coordination
-                </li>
-              </ul>
-
-              <div className="pt-6">
-                <Link
-                  href="/contact"
-                  className="inline-block bg-accent hover:bg-accent/90 text-accent-foreground font-semibold text-lg px-10 py-4 rounded-full shadow-xl transition-all hover:scale-105 hover:shadow-accent/50">
-                  Book Your Celebration Ride
-                </Link>
-              </div>
-            </div>
 
             {/* Image */}
             <div className="rounded-2xl overflow-hidden shadow-2xl border-2 border-accent/30 group">
               <img
-                src="/service-ceremony.png"
-                alt="Ceremony & Engagement Transportation"
+                src="/fifa-2026.png"
+                alt="FIFA 2026 VIP Transportation"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>

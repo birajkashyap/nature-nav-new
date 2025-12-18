@@ -46,7 +46,7 @@ const stripePromise = loadStripe(
 // Only Transit Van available for now (SUV coming soon)
 const VEHICLE_FLEET = [
   { name: "Transit Van (14 Passengers)", minPassengers: 1, maxPassengers: 14 },
-  // { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 }, // Coming Soon
+  // { name: "Luxury SUV (5 Passengers)", minPassengers: 1, maxPassengers: 7 }, // Coming Soon
 ];
 
 function getRecommendedVehicle(passengers: number): string {
@@ -725,14 +725,14 @@ const ContactPage = () => {
                 </SelectItem>
                 <SelectItem value="engagement">
                   <div className="flex flex-col">
-                    <span className="font-semibold">Engagement Service</span>
-                    <span className="text-xs text-muted-foreground">3-hour service from $450</span>
+                    <span className="font-semibold">Ceremony Pick-Up</span>
+                    <span className="text-xs text-muted-foreground">3-hour service from $650</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="ceremony">
                   <div className="flex flex-col">
-                    <span className="font-semibold">Ceremony (Hotel Vista)</span>
-                    <span className="text-xs text-muted-foreground">2-hour service from $350</span>
+                    <span className="font-semibold">Wedding Venue at Vista</span>
+                    <span className="text-xs text-muted-foreground">2-hour service from $450</span>
                   </div>
                 </SelectItem>
               </SelectContent>
@@ -744,8 +744,8 @@ const ContactPage = () => {
             <h2 className="text-4xl font-luxury text-accent">
               {bookingType === 'airport' && 'Airport Transfer Details'}
               {bookingType === 'wedding' && 'Wedding Shuttle Booking'}
-              {bookingType === 'engagement' && 'Engagement Service Booking'}
-              {bookingType === 'ceremony' && 'Ceremony (Hotel Vista) Booking'}
+              {bookingType === 'engagement' && 'Ceremony Pick-Up Booking'}
+              {bookingType === 'ceremony' && 'Wedding Venue at Vista Booking'}
             </h2>
             
             {bookingType === 'airport' && <BookingForm />}

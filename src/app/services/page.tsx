@@ -141,18 +141,18 @@ const servicesData: ServiceData[] = [
       "Elegant transportation for your engagement celebrations and hotel ceremonies in the stunning Canadian Rockies.",
     pricing: [
       {
-        name: "Engagement Service",
+        name: "Ceremony Pick-Up",
         details:
-          "Minimum 3 hours. Perfect for engagement parties, proposals, and celebratory events.",
-        price: "C$450 + GST (Min)",
+          "Minimum 3 hours. Guest transfers for ceremonies and special events.",
+        price: "C$650 + GST (Min)",
         hourly_suv: "C$163/Hr",
         hourly_van: "C$213/Hr",
       },
       {
-        name: "Ceremony at Hotel Vista",
+        name: "Wedding Venue at Vista",
         details:
-          "Minimum 2 hours. Guest transfers to/from Hotel Vista, Canmore.",
-        price: "C$350 + GST (Min)",
+          "Minimum 2 hours. Guest transfers to/from Vista wedding venue, Canmore.",
+        price: "C$450 + GST (Min)",
         hourly_suv: "C$163/Hr",
         hourly_van: "C$213/Hr",
       },

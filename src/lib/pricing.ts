@@ -2,19 +2,19 @@
 
 export const AIRPORT_ROUTES = {
   'YYC-Canmore': {
-    'Luxury SUV (7 Passengers)': 518.44,
+    'Luxury SUV (5 Passengers)': 518.44,
     'Transit Van (14 Passengers)': 685.13,
   },
   'YYC-Banff': {
-    'Luxury SUV (7 Passengers)': 681.45,
+    'Luxury SUV (5 Passengers)': 681.45,
     'Transit Van (14 Passengers)': 897,
   },
   'Canmore-YYC': {
-    'Luxury SUV (7 Passengers)': 518.44,
+    'Luxury SUV (5 Passengers)': 518.44,
     'Transit Van (14 Passengers)': 685.13,
   },
   'Banff-YYC': {
-    'Luxury SUV (7 Passengers)': 681.45,
+    'Luxury SUV (5 Passengers)': 681.45,
     'Transit Van (14 Passengers)': 897,
   },
 } as const;
@@ -23,7 +23,7 @@ export const WEDDING_SHUTTLE = {
   basePrice: 850,
   baseHours: 4,
   hourlyRates: {
-    'Luxury SUV (7 Passengers)': 163,
+    'Luxury SUV (5 Passengers)': 163,
     'Transit Van (14 Passengers)': 213,
   },
   gstRate: 0.05,
@@ -31,23 +31,23 @@ export const WEDDING_SHUTTLE = {
   defaultEndTime: '02:00',   // 2:00 AM
 } as const;
 
-// NEW: Engagement Service - Min 3 hours, Min $450
+// NEW: Ceremony Pick-Up - Min 3 hours, Min $650
 export const ENGAGEMENT_SERVICE = {
-  minPrice: 450,
+  minPrice: 650,
   minHours: 3,
   hourlyRates: {
-    'Luxury SUV (7 Passengers)': 163,
+    'Luxury SUV (5 Passengers)': 163,
     'Transit Van (14 Passengers)': 213,
   },
   gstRate: 0.05,
 } as const;
 
-// NEW: Ceremony at Hotel Vista - Min 2 hours, Min $350
+// NEW: Wedding Venue at Vista - Min 2 hours, Min $450
 export const CEREMONY_HOTEL_VISTA = {
-  minPrice: 350,
+  minPrice: 450,
   minHours: 2,
   hourlyRates: {
-    'Luxury SUV (7 Passengers)': 163,
+    'Luxury SUV (5 Passengers)': 163,
     'Transit Van (14 Passengers)': 213,
   },
   gstRate: 0.05,
@@ -296,7 +296,7 @@ export const DISTANCE_PRICING = {
     { maxKm: Infinity, ratePerKm: 4.20 },
   ],
   vehicleMultipliers: {
-    'Luxury SUV (7 Passengers)': 1.0,
+    'Luxury SUV (5 Passengers)': 1.0,
     'Transit Van (14 Passengers)': 1.32,
   },
 } as const;
@@ -324,7 +324,7 @@ export interface DistancePricingBreakdown {
  * 
  * @example
  * // 108 km trip in SUV
- * calculateDistanceBasedPrice(108, 'Luxury SUV (7 Passengers)')
+ * calculateDistanceBasedPrice(108, 'Luxury SUV (5 Passengers)')
  * // Returns:
  * // {
  * //   distanceKm: 108,

@@ -15,7 +15,7 @@ import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 
 const VEHICLE_OPTIONS = [
-  // { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 }, // Coming Soon
+  // { name: "Luxury SUV (5 Passengers)", minPassengers: 1, maxPassengers: 7 }, // Coming Soon
   { name: "Transit Van (14 Passengers)", minPassengers: 1, maxPassengers: 14 },
 ];
 
@@ -45,7 +45,7 @@ export function EngagementBookingForm() {
   // Auto-select vehicle based on guest count
   useEffect(() => {
     if (guestCount <= 7) {
-      setSelectedVehicle("Luxury SUV (7 Passengers)");
+      setSelectedVehicle("Luxury SUV (5 Passengers)");
     } else {
       setSelectedVehicle("Transit Van (14 Passengers)");
     }

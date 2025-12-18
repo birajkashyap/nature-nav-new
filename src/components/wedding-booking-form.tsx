@@ -16,7 +16,7 @@ import { PlacesAutocomplete } from "@/components/PlacesAutocomplete";
 import { useGoogleMaps } from "@/hooks/useGoogleMaps";
 
 const VEHICLE_OPTIONS = [
-  // { name: "Luxury SUV (7 Passengers)", minPassengers: 1, maxPassengers: 7 }, // Coming Soon
+  // { name: "Luxury SUV (5 Passengers)", minPassengers: 1, maxPassengers: 7 }, // Coming Soon
   { name: "Transit Van (14 Passengers)", minPassengers: 1, maxPassengers: 14 },
 ];
 
