@@ -83,7 +83,7 @@ export async function GET(request: Request) {
       );
     }
 
-    // Calculate deposit (35%)
+    // Calculate deposit (30%)
     const depositAmount = calculateDeposit(totalPrice);
     const remainingAmount = totalPrice - depositAmount;
 

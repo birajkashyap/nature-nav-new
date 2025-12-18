@@ -469,12 +469,12 @@ function BookingForm() {
               </div>
               
               <div className="flex justify-between items-center text-green-500 font-medium">
-                <span>✓ Deposit Now (35%)</span>
+                <span>✓ Deposit Now (30%)</span>
                 <span>C${priceEstimate.depositAmount.toFixed(2)}</span>
               </div>
               
               <div className="flex justify-between items-center text-accent font-medium">
-                <span>Remaining Balance (65%)</span>
+                <span>Remaining Balance (70%)</span>
                 <span>C${(priceEstimate.totalPrice - priceEstimate.depositAmount).toFixed(2)}</span>
               </div>
             </div>
@@ -514,7 +514,7 @@ function BookingForm() {
         size="lg"
         className="w-full h-12 rounded-full bg-accent text-accent-foreground font-semibold shadow-lg transition-all hover:opacity-90 hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? "Processing..." : "Proceed to Payment (35% Deposit)"}
+        {loading ? "Processing..." : "Proceed to Payment (30% Deposit)"}
       </Button>
 
       {!session && (

@@ -271,10 +271,10 @@ export function formatPrice(amount: number): string {
 }
 
 /**
- * Calculate deposit amount (35%)
+ * Calculate deposit amount (30%)
  */
 export function calculateDeposit(totalPrice: number): number {
-  return totalPrice * 0.35;
+  return totalPrice * 0.3;
 }
 
 // ==================== DYNAMIC DISTANCE-BASED PRICING ====================

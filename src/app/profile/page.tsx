@@ -273,7 +273,7 @@ function ProfileContent() {
                         {activeBooking.payment100
                           ? "Fully Paid"
                           : activeBooking.payment50
-                          ? "Deposit Paid (65% Remaining)"
+                          ? "Deposit Paid (70% Remaining)"
                           : "Pending Deposit"}
                       </p>
                     </div>
