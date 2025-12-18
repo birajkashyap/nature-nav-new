@@ -126,7 +126,7 @@ const FleetPage = () => {
                   </div>
                 )}
 
-                <h2 className="absolute bottom-4 left-6 text-4xl font-luxury text-accent-foreground drop-shadow-lg z-10">
+                <h2 className="absolute bottom-4 left-6 text-4xl font-luxury text-white drop-shadow-lg z-10">
                   {vehicle.name}
                 </h2>
               </CardHeader>
