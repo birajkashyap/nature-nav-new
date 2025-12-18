@@ -327,7 +327,7 @@ export async function sendBookingConfirmationEmail(
                     <span>C$${booking.depositAmount.toFixed(2)}</span>
                   </div>
                   <div class="payment-row remaining">
-                    <span>Remaining Balance (70%)</span>
+                    <span>Remaining Balance (65%)</span>
                     <span>C$${remainingAmount}</span>
                   </div>
                 </div>

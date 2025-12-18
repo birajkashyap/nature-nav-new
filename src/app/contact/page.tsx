@@ -474,7 +474,7 @@ function BookingForm() {
               </div>
               
               <div className="flex justify-between items-center text-accent font-medium">
-                <span>Remaining Balance (70%)</span>
+                <span>Remaining Balance (65%)</span>
                 <span>C${(priceEstimate.totalPrice - priceEstimate.depositAmount).toFixed(2)}</span>
               </div>
             </div>
