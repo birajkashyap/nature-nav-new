@@ -169,7 +169,7 @@ export async function sendBookingConfirmationEmail(
     await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
-      subject: `Booking Confirmed! - Nature Navigator Shuttle Services`,
+      subject: `Thank You for Booking with Nature Navigator Shuttle Services`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -185,168 +185,61 @@ export async function sendBookingConfirmationEmail(
                 background-color: #f5f5f5;
               }
               .container {
-                background: #1a1a1a;
+                background: white;
                 padding: 40px;
-                border-radius: 12px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
               }
               .header {
-                text-align: center;
                 margin-bottom: 30px;
               }
-              .header h1 {
+              .content p {
+                margin-bottom: 15px;
+                color: #333;
+              }
+              .phone {
+                font-weight: 600;
                 color: #D4AF37;
-                font-size: 28px;
-                margin: 0;
-                font-weight: 600;
-              }
-              .success-badge {
-                background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-                color: white;
-                padding: 8px 20px;
-                border-radius: 20px;
-                display: inline-block;
-                font-size: 14px;
-                font-weight: 600;
-                margin: 15px 0;
-              }
-              .content {
-                background: #262626;
-                padding: 30px;
-                border-radius: 8px;
-                border-left: 4px solid #D4AF37;
-              }
-              .detail-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 12px 0;
-                border-bottom: 1px solid #333;
-              }
-              .detail-label {
-                color: #999;
-                font-size: 14px;
-              }
-              .detail-value {
-                color: #fff;
-                font-weight: 600;
-                text-align: right;
-              }
-              .payment-section {
-                background: #1f1f1f;
-                padding: 20px;
-                border-radius: 8px;
-                margin-top: 20px;
-              }
-              .payment-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 8px 0;
-                color: #ccc;
-              }
-              .payment-row.highlight {
-                color: #22c55e;
-                font-weight: 600;
-              }
-              .payment-row.remaining {
-                color: #D4AF37;
-                font-weight: 600;
-                border-top: 1px solid #333;
-                padding-top: 12px;
-                margin-top: 8px;
-              }
-              .button {
-                display: inline-block;
-                padding: 14px 32px;
-                background: linear-gradient(135deg, #D4AF37 0%, #B8962E 100%);
-                color: #1a1a1a !important;
-                text-decoration: none;
-                border-radius: 6px;
-                font-weight: 600;
-                margin: 20px 0;
+                font-size: 16px;
               }
               .footer {
-                margin-top: 30px;
-                text-align: center;
-                font-size: 14px;
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid #eee;
                 color: #666;
+                font-size: 14px;
               }
-              .booking-id {
-                font-family: monospace;
-                background: #333;
-                padding: 4px 8px;
-                border-radius: 4px;
+              .company-name {
                 color: #D4AF37;
-                font-size: 12px;
+                font-weight: 600;
               }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="header">
-                <h1>🚐 Nature Navigator</h1>
-                <div class="success-badge">✓ Booking Confirmed</div>
+                <p style="margin: 0;"><strong>Hi ${customerName || 'Valued Customer'},</strong></p>
               </div>
               
               <div class="content">
-                <p style="color: #fff; margin-top: 0;">Hello ${customerName || 'Valued Customer'},</p>
+                <p>Thank you for booking with Nature Navigator Shuttle Services. We truly appreciate the opportunity to be part of your special event.</p>
                 
-                <p style="color: #ccc;">Thank you for booking with Nature Navigator Shuttle Services! Your deposit has been received and your booking is now confirmed.</p>
+                <p>Please rest assured — we will plan and coordinate everything for you to ensure smooth, reliable, and stress-free transportation on your wedding day. If you have any questions, changes, or special requests, simply give us a call and we'll take care of the rest.</p>
                 
-                <div class="detail-row">
-                  <span class="detail-label">Booking ID</span>
-                  <span class="booking-id">${booking.id.slice(-8).toUpperCase()}</span>
-                </div>
+                <p class="phone">Phone: <a href="tel:+14379904858" style="color: #D4AF37; text-decoration: none;">+1 (437) 990-4858</a></p>
                 
-                <div class="detail-row">
-                  <span class="detail-label">Vehicle</span>
-                  <span class="detail-value">${booking.car}</span>
-                </div>
+                <p>Kindly review and sign the attached Terms & Conditions to confirm your booking. Once signed, please reply to this email with the completed document.</p>
                 
-                <div class="detail-row">
-                  <span class="detail-label">Pickup</span>
-                  <span class="detail-value">${booking.pickup}</span>
-                </div>
+                <p>If you need any assistance at all, we're just a call away.</p>
                 
-                <div class="detail-row">
-                  <span class="detail-label">Drop-off</span>
-                  <span class="detail-value">${booking.drop}</span>
-                </div>
-                
-                <div class="detail-row" style="border-bottom: none;">
-                  <span class="detail-label">Date & Time</span>
-                  <span class="detail-value">${formattedDate}</span>
-                </div>
-                
-                <div class="payment-section">
-                  <p style="color: #fff; margin: 0 0 15px 0; font-weight: 600;">Payment Summary</p>
-                  <div class="payment-row">
-                    <span>Total Price</span>
-                    <span>C$${booking.totalPrice.toFixed(2)}</span>
-                  </div>
-                  <div class="payment-row highlight">
-                    <span>✓ Deposit Paid (35%)</span>
-                    <span>C$${booking.depositAmount.toFixed(2)}</span>
-                  </div>
-                  <div class="payment-row remaining">
-                    <span>Remaining Balance (65%)</span>
-                    <span>C$${remainingAmount}</span>
-                  </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 25px;">
-                  <a href="${profileLink}" class="button">View My Booking</a>
-                </div>
-                
-                <p style="color: #999; font-size: 13px; margin-top: 25px;">
-                  For any questions or changes, please contact us at 
-                  <a href="mailto:info@naturenavigatorshuttle.ca" style="color: #D4AF37;">info@naturenavigatorshuttle.ca</a> 
-                  or call <a href="tel:+14379904858" style="color: #D4AF37;">+1 (437) 990-4858</a>
-                </p>
+                <p>Thank you again for choosing Nature Navigator Shuttle Services. We look forward to serving you.</p>
               </div>
               
               <div class="footer">
-                <p style="margin: 5px 0; color: #D4AF37;">Nature Navigator Shuttle Services Ltd.</p>
-                <p style="margin: 5px 0; color: #666;">Premium Chauffeur Services | Canadian Rockies</p>
-                <p style="margin: 5px 0; font-size: 12px; color: #555;">107 Armstrong Place, Canmore, Alberta</p>
+                <p style="margin: 5px 0;"><strong>Warm regards,</strong></p>
+                <p style="margin: 5px 0;" class="company-name">Nature Navigator Shuttle Services Ltd.</p>
+                <p style="margin: 5px 0;">Phone: <a href="tel:+14379904858" style="color: #D4AF37; text-decoration: none;">+1 (437) 990-4858</a></p>
+                <p style="margin: 5px 0;">Email: <a href="mailto:info@naturenavigatorshuttle.ca" style="color: #D4AF37; text-decoration: none;">info@naturenavigatorshuttle.ca</a></p>
               </div>
             </div>
           </body>
