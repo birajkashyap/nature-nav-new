@@ -156,20 +156,44 @@ export async function sendBookingConfirmationEmail(
 ): Promise<void> {
   const profileLink = `${APP_URL}/profile`;
   const remainingAmount = (booking.totalPrice - booking.depositAmount).toFixed(2);
+  const depositPercentage = ((booking.depositAmount / booking.totalPrice) * 100).toFixed(0);
+  const remainingPercentage = (100 - parseFloat(depositPercentage)).toFixed(0);
+  
   const formattedDate = new Date(booking.date).toLocaleDateString('en-CA', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
   });
+
+  // Customize content based on booking type
+  const isWedding = booking.bookingType === 'WEDDING_SHUTTLE';
+  const isAirportTransfer = booking.bookingType === 'AIRPORT_TRANSFER';
+  const isEngagement = booking.bookingType === 'ENGAGEMENT';
+  const isCeremony = booking.bookingType === 'CEREMONY_HOTEL_VISTA';
+
+  let serviceTypeText = 'your transportation service';
+  let eventTypeText = 'your event';
+  
+  if (isWedding) {
+    serviceTypeText = 'your wedding shuttle service';
+    eventTypeText = 'your wedding day';
+  } else if (isAirportTransfer) {
+    serviceTypeText = 'your airport transfer';
+    eventTypeText = 'your journey';
+  } else if (isEngagement) {
+    serviceTypeText = 'your engagement service';
+    eventTypeText = 'your special day';
+  } else if (isCeremony) {
+    serviceTypeText = 'your ceremony transportation';
+    eventTypeText = 'your ceremony';
+  }
 
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
-      subject: `Thank You for Booking with Nature Navigator Shuttle Services`,
+      subject: `Booking Confirmed - Nature Navigator ${isWedding ? 'Wedding Shuttle' : isAirportTransfer ? 'Airport Transfer' : 'Shuttle Services'}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -202,6 +226,61 @@ export async function sendBookingConfirmationEmail(
                 color: #D4AF37;
                 font-size: 16px;
               }
+              .booking-details {
+                background: #f9f9f9;
+                border-left: 4px solid #D4AF37;
+                padding: 20px;
+                margin: 25px 0;
+                border-radius: 4px;
+              }
+              .booking-details h3 {
+                margin-top: 0;
+                color: #333;
+                font-size: 16px;
+              }
+              .detail-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px solid #eee;
+              }
+              .detail-row:last-child {
+                border-bottom: none;
+              }
+              .detail-label {
+                font-weight: 600;
+                color: #666;
+              }
+              .detail-value {
+                color: #333;
+                text-align: right;
+              }
+              .payment-summary {
+                background: #e8f5e9;
+                border: 2px solid #4caf50;
+                padding: 20px;
+                margin: 25px 0;
+                border-radius: 6px;
+              }
+              .payment-summary h3 {
+                margin-top: 0;
+                color: #2e7d32;
+                font-size: 18px;
+              }
+              .payment-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+                font-size: 16px;
+              }
+              .payment-row.total {
+                border-top: 2px solid #4caf50;
+                margin-top: 10px;
+                padding-top: 15px;
+                font-weight: 700;
+                font-size: 18px;
+                color: #2e7d32;
+              }
               .footer {
                 margin-top: 40px;
                 padding-top: 20px;
@@ -213,22 +292,86 @@ export async function sendBookingConfirmationEmail(
                 color: #D4AF37;
                 font-weight: 600;
               }
+              .success-badge {
+                display: inline-block;
+                background: #4caf50;
+                color: white;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 15px;
+              }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="header">
-                <p style="margin: 0;"><strong>Hi ${customerName || 'Valued Customer'},</strong></p>
+                <span class="success-badge">✓ Booking Confirmed</span>
+                <p style="margin: 10px 0 0 0;"><strong>Hi ${customerName || 'Valued Customer'},</strong></p>
               </div>
               
               <div class="content">
-                <p>Thank you for booking with Nature Navigator Shuttle Services. We truly appreciate the opportunity to be part of your special event.</p>
+                <p>Thank you for booking with Nature Navigator Shuttle Services. We truly appreciate the opportunity to be part of ${eventTypeText}.</p>
                 
+                <div class="booking-details">
+                  <h3>📋 Booking Details</h3>
+                  <div class="detail-row">
+                    <span class="detail-label">Booking ID:</span>
+                    <span class="detail-value">${booking.id}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Service Date:</span>
+                    <span class="detail-value">${formattedDate}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Vehicle:</span>
+                    <span class="detail-value">${booking.car}</span>
+                  </div>
+                  ${!isWedding ? `
+                  <div class="detail-row">
+                    <span class="detail-label">Pickup:</span>
+                    <span class="detail-value">${booking.pickup}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Drop-off:</span>
+                    <span class="detail-value">${booking.drop}</span>
+                  </div>
+                  ` : `
+                  <div class="detail-row">
+                    <span class="detail-label">Event Venue:</span>
+                    <span class="detail-value">${booking.pickup}</span>
+                  </div>
+                  `}
+                </div>
+
+                <div class="payment-summary">
+                  <h3>💰 Payment Summary</h3>
+                  <div class="payment-row">
+                    <span>Total Service Cost:</span>
+                    <span><strong>$${booking.totalPrice.toFixed(2)} CAD</strong></span>
+                  </div>
+                  <div class="payment-row" style="color: #4caf50;">
+                    <span>✓ Deposit Paid (${depositPercentage}%):</span>
+                    <span><strong>$${booking.depositAmount.toFixed(2)} CAD</strong></span>
+                  </div>
+                  <div class="payment-row total">
+                    <span>Remaining Balance (${remainingPercentage}%):</span>
+                    <span>$${remainingAmount} CAD</span>
+                  </div>
+                </div>
+                
+                ${isWedding ? `
                 <p>Please rest assured — we will plan and coordinate everything for you to ensure smooth, reliable, and stress-free transportation on your wedding day. If you have any questions, changes, or special requests, simply give us a call and we'll take care of the rest.</p>
+                ` : `
+                <p>Your booking is confirmed and we're all set for ${eventTypeText}. Our professional chauffeur will ensure a comfortable and timely ${isAirportTransfer ? 'transfer' : 'service'}. If you have any questions or need to make changes, we're here to help.</p>
+                `}
                 
                 <p class="phone">Phone: <a href="tel:+14379904858" style="color: #D4AF37; text-decoration: none;">+1 (437) 990-4858</a></p>
                 
+                ${isWedding ? `
                 <p>Kindly review and sign the attached Terms & Conditions to confirm your booking. Once signed, please reply to this email with the completed document.</p>
+                ` : ''}
                 
                 <p>If you need any assistance at all, we're just a call away.</p>
                 
@@ -252,3 +395,4 @@ export async function sendBookingConfirmationEmail(
     // Don't throw - we don't want to fail the webhook if email fails
   }
 }
+

@@ -96,6 +96,7 @@ export async function POST(req: Request) {
                     date: existingBooking.date,
                     totalPrice: existingBooking.totalPrice || 0,
                     depositAmount: existingBooking.depositAmount || 0,
+                    bookingType: existingBooking.bookingType,
                   }
                 );
                 console.log("📧 Confirmation email sent to:", user.email);
