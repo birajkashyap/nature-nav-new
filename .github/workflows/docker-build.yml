@@ -1,11 +1,14 @@
 name: Build and Push Docker Image
 
 on:
-  push:
-    branches: [main]
-    tags:
-      - 'v*.*.*'
-  workflow_dispatch:
+  # Disabled auto-build since project transferred to client
+  # Keep workflow for portfolio/interview demonstration
+  # Can be triggered manually if needed
+  # push:
+  #   branches: [main]
+  # tags:
+  #   - 'v*.*.*'
+  workflow_dispatch:  # Manual trigger only
 
 env:
   REGISTRY: ghcr.io
