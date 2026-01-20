@@ -7,7 +7,16 @@ import { prisma } from "@/lib/prisma";
  * Returns 503 Service Unavailable if any critical system is down
  */
 export async function GET() {
-  const healthCheck = {
+  const healthCheck: {
+    status: string;
+    timestamp: string;
+    uptime: number;
+    checks: {
+      database: any;
+      environment: any;
+      memory: any;
+    };
+  } = {
     status: "healthy",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
