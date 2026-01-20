@@ -7,7 +7,8 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install production dependencies only
-RUN npm ci --omit=dev && \
+# Try npm ci first, fallback to npm install if lock file is missing
+RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --production; fi && \
     npm cache clean --force
 
 # Stage 2: Builder
@@ -18,7 +19,8 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install all dependencies (including dev dependencies)
-RUN npm ci
+# Try npm ci first, fallback to npm install if lock file issues
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
 # Copy Prisma schema
 COPY prisma ./prisma/
