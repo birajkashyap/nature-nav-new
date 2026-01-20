@@ -1,9 +1,11 @@
 name: Deploy to Production
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  # Disabled auto-deployment since project transferred to client
+  # Keep workflow for portfolio/interview demonstration
+  # push:
+  #   branches: [main]
+  workflow_dispatch:  # Manual trigger only
 
 concurrency:
   group: production-deployment
