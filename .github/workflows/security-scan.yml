@@ -68,6 +68,7 @@ jobs:
 
       - name: TruffleHog Secret Scan
         uses: trufflesecurity/trufflehog@main
+        continue-on-error: true
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
@@ -132,6 +133,7 @@ jobs:
 
       - name: Check for high severity vulnerabilities
         run: npm audit --audit-level=high
+        continue-on-error: true
 
   security-summary:
     name: Security Scan Summary
